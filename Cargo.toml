@@ -7,5 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-zbus = "1.0.0"
-zvariant_derive = "2.0.0"
+zbus = "1.0"
+zvariant_derive = "2.0"
+zvariant = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+anyhow = "1.0"
