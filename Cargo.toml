@@ -1,10 +1,22 @@
 [package]
 name = "niter"
 version = "0.1.0"
-authors = ["Mathieu Amiot <m.amiot@otak-arts.com>"]
+documentation = "https://docs.rs/niter"
+repository = "https://github.com/OtaK/niter"
+readme = "README.md"
+authors = ["Mathieu Amiot <amiot.mathieu@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "MIT/Apache-2.0"
+keywords = [
+    "bluetooth",
+    "bluez",
+    "dbus",
+    "zbus"
+]
+include = [
+    "**/*.rs",
+    "Cargo.toml"
+]
 
 [dependencies]
 zbus = "1.0"
