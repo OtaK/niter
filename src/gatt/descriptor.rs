@@ -1,0 +1,45 @@
+#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub struct GattDescriptorReadOptions {
+    offset: u16,
+    device: crate::adapter::Device,
+    link: super::GattLinkType,
+}
+
+#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub struct GattDescriptorWriteOptions {
+    offset: u16,
+    device: crate::adapter::Device,
+    link: super::GattLinkType,
+    prepare_authorize: bool,
+}
+
+#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub enum GattDescriptorFlags {
+    Read,
+    Write,
+    EncryptRead,
+    EncryptWrite,
+    EncryptAuthenticatedRead,
+    EncryptAuthenticatedWrite,
+    SecureRead,
+    SecureWrite,
+    Authorize,
+}
+
+#[zbus::dbus_proxy(interface = "org.bluez.GattDescriptor1", default_service = "org.bluez")]
+#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub trait GattDescriptor {
+    fn read_value(&self, flags: GattDescriptorReadOptions) -> zbus::Result<Vec<u8>>;
+    fn write_value(&self, value: Vec<u8>, flags: GattDescriptorWriteOptions) -> zbus::Result<()>;
+
+    #[zbus::dbus_proxy(property)]
+    fn uuid(&self) -> zbus::fdo::Result<String>;
+    #[zbus::dbus_proxy(property)]
+    fn characteristic(&self) -> zbus::fdo::Result<super::GattCharacteristic>;
+    #[zbus::dbus_proxy(property)]
+    fn value(&self) -> zbus::fdo::Result<Vec<u8>>;
+    #[zbus::dbus_proxy(property)]
+    fn flags(&self) -> zbus::fdo::Result<Vec<GattDescriptorFlags>>;
+    #[zbus::dbus_proxy(property)]
+    fn handle(&self) -> zbus::fdo::Result<u16>;
+}

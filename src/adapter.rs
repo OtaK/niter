@@ -9,7 +9,7 @@ use crate::error::*;
 pub enum TransportFilter {
     Auto,
     BrEdr,
-    Le
+    Le,
 }
 
 impl Default for TransportFilter {
@@ -25,7 +25,10 @@ impl std::str::FromStr for TransportFilter {
             "auto" => Ok(Self::Auto),
             "bredr" => Ok(Self::BrEdr),
             "le" => Ok(Self::Le),
-            _ => Err(NiterError::Other(anyhow::anyhow!("Unrecognized Tranport Filter: {}", s)))
+            _ => Err(NiterError::Other(anyhow::anyhow!(
+                "Unrecognized Tranport Filter: {}",
+                s
+            ))),
         }
     }
 }
@@ -35,20 +38,20 @@ impl std::string::ToString for TransportFilter {
         match *self {
             Self::Le => "le".into(),
             Self::BrEdr => "bredr".into(),
-            Self::Auto => "auto".into()
+            Self::Auto => "auto".into(),
         }
     }
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct DiscoveryFilter {
-    uuids: Vec<crate::uuid::Uuid>,
+    uuids: Vec<uuid::Uuid>,
     rssi: Option<u16>,
     pathloss: Option<u16>,
     transport: TransportFilter,
     duplicate_data: bool,
     discoverable: bool,
-    pattern: Option<String>
+    pattern: Option<String>,
 }
 
 impl Default for DiscoveryFilter {
@@ -60,7 +63,7 @@ impl Default for DiscoveryFilter {
             transport: TransportFilter::Auto,
             duplicate_data: true,
             discoverable: false,
-            pattern: None
+            pattern: None,
         }
     }
 }
@@ -82,28 +85,60 @@ impl DiscoveryFilter {
 impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
     type Error = NiterError;
     fn try_into(mut self) -> NiterResult<zvariant::Value<'static>> {
-        let mut dict = zvariant::Dict::new(zvariant::Signature::from_str_unchecked("s"), zvariant::Signature::from_str_unchecked("v"));
+        let mut dict: std::collections::HashMap<&str, zvariant::Value<'_>> =
+            std::collections::HashMap::new();
         if !self.uuids.is_empty() {
-            // FIXME: meh
-            //dict.add("UUIDs", zvariant::Value::Array(self.uuids.into()))?;
+            let tmp = self
+                .uuids
+                .into_iter()
+                .map(|uuid| {
+                    uuid.to_hyphenated()
+                        .encode_lower(&mut uuid::Uuid::encode_buffer())
+                        .to_string()
+                        .into()
+                })
+                .try_fold(
+                    zvariant::Array::new(zvariant::Signature::from_str_unchecked("s")),
+                    |mut acc, s: zvariant::Str| -> NiterResult<zvariant::Array> {
+                        acc.append(zvariant::Value::Str(s))?;
+                        Ok(acc)
+                    },
+                )?;
+
+            dict.insert("UUIDs", tmp.into());
         }
         if let Some(rssi) = self.rssi.take() {
-            dict.add("RSSI", rssi)?;
+            dict.insert("RSSI", rssi.into());
         }
         if let Some(pathloss) = self.pathloss.take() {
-            dict.add("Pathloss", pathloss)?;
+            dict.insert("Pathloss", pathloss.into());
         }
-        dict.add("Transport", zvariant::Value::Str(self.transport.to_string().into()))?;
-        dict.add("DuplicateData", self.duplicate_data)?;
-        dict.add("Discoverable", self.discoverable)?;
+        dict.insert(
+            "Transport",
+            zvariant::Value::Str(self.transport.to_string().into()),
+        );
+        dict.insert("DuplicateData", self.duplicate_data.into());
+        dict.insert("Discoverable", self.discoverable.into());
         if let Some(pat) = self.pattern.take() {
-            dict.add("Pattern", zvariant::Value::Str(pat.into()))?;
+            dict.insert("Pattern", zvariant::Value::Str(pat.into()));
         }
 
-        Ok(zvariant::Value::Dict(dict))
+        Ok(zvariant::Value::Dict(dict.into()))
     }
 }
 
+#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub enum AddressType {
+    Public,
+    Random,
+}
+
+#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub enum AdapterRole {
+    Central,
+    Peripheral,
+    CentralPeripheral,
+}
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Device {}
@@ -121,4 +156,33 @@ pub trait Adapter {
     fn set_discovery_filter(&self, filter: zvariant::Value) -> zbus::Result<()>;
     fn get_discovery_filters(&self) -> zbus::Result<Vec<String>>;
     fn connect_device(&self, device: zvariant::Value) -> zbus::Result<()>;
+
+    #[zbus::dbus_proxy(property)]
+    fn address(&self) -> zbus::fdo::Result<String>;
+    #[zbus::dbus_proxy(property)]
+    fn address_type(&self) -> zbus::fdo::Result<AddressType>;
+    #[zbus::dbus_proxy(property)]
+    fn name(&self) -> zbus::fdo::Result<String>;
+    #[zbus::dbus_proxy(property)]
+    fn alias(&self) -> zbus::fdo::Result<String>;
+    #[zbus::dbus_proxy(property)]
+    fn class(&self) -> zbus::fdo::Result<u32>;
+    #[zbus::dbus_proxy(property)]
+    fn powered(&self) -> zbus::fdo::Result<bool>;
+    #[zbus::dbus_proxy(property)]
+    fn discoverable(&self) -> zbus::fdo::Result<bool>;
+    #[zbus::dbus_proxy(property)]
+    fn pairable(&self) -> zbus::fdo::Result<bool>;
+    #[zbus::dbus_proxy(property)]
+    fn pairable_timeout(&self) -> zbus::fdo::Result<u32>;
+    #[zbus::dbus_proxy(property)]
+    fn discoverable_timeout(&self) -> zbus::fdo::Result<u32>;
+    #[zbus::dbus_proxy(property)]
+    fn discovering(&self) -> zbus::fdo::Result<bool>;
+    #[zbus::dbus_proxy(property)]
+    fn uuids(&self) -> zbus::fdo::Result<Vec<String>>;
+    #[zbus::dbus_proxy(property)]
+    fn modalias(&self) -> zbus::fdo::Result<String>;
+    #[zbus::dbus_proxy(property)]
+    fn roles(&self) -> zbus::fdo::Result<Vec<AdapterRole>>;
 }
