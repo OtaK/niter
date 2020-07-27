@@ -1,7 +1,7 @@
 use crate::adapter::Device;
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct Agent {}
+pub struct Agent(String);
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.AgentManager1",

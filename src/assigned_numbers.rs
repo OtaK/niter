@@ -1,6 +1,6 @@
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-#[repr(u8)]
-pub enum AssignedRfcommNumbers {
+#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[repr(u16)]
+pub enum AssignedRfcommNumber {
     Dun = 1,
     Spp = 3,
     HspHs = 6,
