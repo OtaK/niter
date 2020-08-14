@@ -38,8 +38,8 @@ pub trait Device {
     fn wake_allowed(&self) -> zbus::fdo::Result<bool>;
     #[zbus::dbus_proxy(property)]
     fn alias(&self) -> zbus::fdo::Result<String>;
-    // #[zbus::dbus_proxy(property)]
-    // fn adapter(&self) -> zbus::fdo::Result<crate::adapter::Adapter>;
+    #[zbus::dbus_proxy(property)]
+    fn adapter(&self) -> zbus::fdo::Result<crate::adapter::Adapter>;
     #[zbus::dbus_proxy(property)]
     fn legacy_pairing(&self) -> zbus::fdo::Result<bool>;
     #[zbus::dbus_proxy(property)]

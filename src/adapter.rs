@@ -1,11 +1,7 @@
-// #[derive(Debug, Clone, PartialEq, PartialOrd, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
-// pub struct Adapter {
-
-// }
 use crate::error::*;
 
-#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 #[repr(u8)]
+#[derive(Debug, Clone, Copy, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
 pub enum TransportFilter {
     Auto,
     BrEdr,
@@ -142,6 +138,33 @@ pub enum AdapterRole {
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Device {}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
+pub struct Adapter<'a, 'c> {
+    #[serde(skip)]
+    connection: &'c zbus::Connection,
+    object_path: &'a zvariant::ObjectPath<'a>,
+};
+
+impl std::str::FromStr for Adapter {
+    type Err = NiterError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use std::convert::TryFrom as _;
+        let object_path = zvariant::ObjectPath::try_from(s)?;
+        Ok(Self {
+            connection,
+            object_path
+        })
+    }
+}
+
+impl<'a> std::convert::TryInto<AdapterProxy<'a>> for Adapter {
+    type Error = NiterError;
+    fn try_into(self) -> NiterResult<AdapterProxy<'a>> {
+        Ok(AdapterProxy::new_for(self.0.into())?)
+    }
+
+}
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.Adapter1",

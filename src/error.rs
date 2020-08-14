@@ -2,7 +2,7 @@
 pub enum NiterError {
     #[error(transparent)]
     DbusError(#[from] zbus::Error),
-    #[error("BlueZ Error: {0}")]
+    #[error(transparent)]
     BlueZError(#[from] BlueZError),
     #[error(transparent)]
     ZvariantError(#[from] zvariant::Error),
@@ -12,19 +12,16 @@ pub enum NiterError {
     Other(#[from] anyhow::Error),
 }
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, zbus::DBusError)]
+#[dbus_error(prefix = "org.bluez.Error")]
 pub enum BlueZError {
-    #[error("org.bluez.Error.Failed")]
-    Failed,
-    #[error("org.bluez.Error.InProgress")]
+    ZBus(zbus::Error),
+    InvalidArguments(String),
+    Failed(String),
     InProgress,
-    #[error("org.bluez.Error.NotPermitted")]
     NotPermitted,
-    #[error("org.bluez.Error.NotAuthorized")]
     NotAuthorized,
-    #[error("org.bluez.Error.InvalidOffset")]
     InvalidOffset,
-    #[error("org.bluez.Error.NotSupported")]
     NotSupported,
 }
 

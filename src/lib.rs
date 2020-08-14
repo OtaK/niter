@@ -13,6 +13,11 @@ pub mod device;
 pub mod gatt;
 pub mod profile;
 
+pub trait BlueZProxy: zvariant::Type + Sized {
+    fn object_path<'a>(&'a self) -> &'a zvariant::ObjectPath<'a>;
+    fn proxy(self, connection: &zbus::Connection) -> zbus::Proxy;
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
