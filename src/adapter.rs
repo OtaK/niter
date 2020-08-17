@@ -1,4 +1,5 @@
 use crate::error::*;
+use crate::impl_tryfrom_zvariant;
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
@@ -110,6 +111,8 @@ pub enum AdapterRole {
     CentralPeripheral,
 }
 
+impl_tryfrom_zvariant!(AdapterRole);
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
 pub struct Adapter {
     object_path: String
@@ -129,7 +132,8 @@ impl Adapter {
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.Adapter1",
-    default_service = "org.bluez"
+    default_service = "org.bluez",
+    default_path = "/org/bluez/hci0"
 )]
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub trait Adapter {
@@ -140,33 +144,67 @@ pub trait Adapter {
     fn get_discovery_filters(&self) -> zbus::Result<Vec<String>>;
     fn connect_device(&self, device: zvariant::Value) -> zbus::Result<()>;
 
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn address(&self) -> zbus::fdo::Result<String>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn address_type(&self) -> zbus::fdo::Result<crate::AddressType>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn name(&self) -> zbus::fdo::Result<String>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn alias(&self) -> zbus::fdo::Result<String>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn class(&self) -> zbus::fdo::Result<u32>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn powered(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn discoverable(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn pairable(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn pairable_timeout(&self) -> zbus::fdo::Result<u32>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn discoverable_timeout(&self) -> zbus::fdo::Result<u32>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn discovering(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property, name = "UUIDs")]
-    fn uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property, name = "UUIDs")]
+    fn uuids(&self) -> zbus::fdo::Result<crate::UuidArray>;
+    #[dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;
-    #[zbus::dbus_proxy(property)]
-    fn roles(&self) -> zbus::fdo::Result<Vec<AdapterRole>>;
+    #[dbus_proxy(property)]
+    // fn roles(&self) -> zbus::fdo::Result<Vec<AdapterRole>>;
+    fn roles(&self) -> zbus::fdo::Result<Vec<String>>;
 }
+
+impl<'a> std::ops::Deref for AdapterProxy<'a> {
+    type Target = zbus::Proxy<'a>;
+    fn deref(&self) -> &Self::Target { &self.0 }
+}
+
+// type ObjectManagerItemList = std::collections::HashMap<
+//     String,
+//     std::collections::HashMap<
+//         String,
+//         std::collections::HashMap<
+//             String,
+//             zvariant::OwnedValue
+//         >
+//     >
+// >;
+
+// impl<'a> AdapterProxy<'a> {
+    // FIXME: This doesn't work because lifetimes are fundamentally broken on zbus's side
+    // pub fn enumerate_adapters(connection: &'a zbus::Connection) -> NiterResult<Vec<Self>> {
+    //     let object_manager = zbus::fdo::ObjectManagerProxy::new_for(connection, "org.bluez", "/")?;
+    //     let managed_objects = object_manager.get_managed_objects()?;
+    //     let iter = managed_objects
+    //         .iter()
+    //         .filter(|(_, contents)| contents.contains_key("org.bluez.Adapter1"))
+    //         .map(move |(path, _)| zbus::Proxy::new(connection, "org.bluez.Adapter1", "org.bluez", path))
+    //         .map(|proxy| Self(proxy.unwrap()))
+    //         .collect();
+
+    //     Ok(iter)
+
+    // }
+// }
 

@@ -3,9 +3,13 @@ pub enum NiterError {
     #[error(transparent)]
     DbusError(#[from] zbus::Error),
     #[error(transparent)]
+    DbusFdoError(#[from] zbus::fdo::Error),
+    #[error(transparent)]
     BlueZError(#[from] BlueZError),
     #[error(transparent)]
     ZvariantError(#[from] zvariant::Error),
+    #[error(transparent)]
+    StrumParseError(#[from] strum::ParseError),
     #[error(transparent)]
     UuidError(#[from] uuid::Error),
     #[error(transparent)]
