@@ -1,3 +1,6 @@
+use crate::error::*;
+use crate::impl_tryfrom_zvariant;
+
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattCharacteristicReadOptions {
     offset: u16,
@@ -12,6 +15,8 @@ pub enum GattWriteType {
     Request,
     Reliable,
 }
+
+impl_tryfrom_zvariant!(GattWriteType);
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattCharacteristicWriteOptions {
@@ -30,27 +35,30 @@ pub struct GattCharacteristicAcquireOptions {
     link: super::GattLinkType,
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-#[strum(serialize_all = "kebab-case")]
-pub enum GattCharacteristicFlags {
-    Broadcast,
-    Read,
-    WriteWithoutResponse,
-    Write,
-    Notify,
-    Indicate,
-    AuthenticatedSignedWrites,
-    ExtendedProperties,
-    ReliableWrite,
-    WritableAuxiliaries,
-    EncryptRead,
-    EncryptWrite,
-    EncryptAuthenticatedRead,
-    EncryptAuthenticatedWrite,
-    SecureRead,
-    SecureWrite,
-    Authorize,
-}
+// #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+// #[strum(serialize_all = "kebab-case")]
+// pub enum GattCharacteristicFlags {
+//     Broadcast,
+//     Read,
+//     WriteWithoutResponse,
+//     Write,
+//     Notify,
+//     Indicate,
+//     AuthenticatedSignedWrites,
+//     ExtendedProperties,
+//     ReliableWrite,
+//     WritableAuxiliaries,
+//     EncryptRead,
+//     EncryptWrite,
+//     EncryptAuthenticatedRead,
+//     EncryptAuthenticatedWrite,
+//     SecureRead,
+//     SecureWrite,
+//     Authorize,
+// }
+
+// impl_tryfrom_zvariant!(GattCharacteristicFlags);
+pub type GattCharacteristicFlags = String;
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.GattCharacteristic1",
@@ -76,21 +84,21 @@ pub trait GattCharacteristic {
     fn stop_notify(&self) -> zbus::Result<()>;
     fn confirm(&self) -> zbus::Result<()>;
 
-    #[zbus::dbus_proxy(property, name = "UUID")]
+    #[dbus_proxy(property, name = "UUID")]
     fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
-    #[zbus::dbus_proxy(property)]
-    fn service(&self) -> zbus::fdo::Result<super::GattService>;
-    #[zbus::dbus_proxy(property)]
+    // #[dbus_proxy(property)]
+    // fn service(&self) -> zbus::fdo::Result<super::GattService>;
+    #[dbus_proxy(property)]
     fn value(&self) -> zbus::fdo::Result<Vec<u8>>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn write_acquired(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn notify_acquired(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn notifying(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn flags(&self) -> zbus::fdo::Result<Vec<GattCharacteristicFlags>>;
-    #[zbus::dbus_proxy(property)]
+    #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }
 

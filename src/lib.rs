@@ -24,9 +24,13 @@ pub enum AddressType {
 
 impl_tryfrom_zvariant!(AddressType);
 
-pub type ServiceData = std::collections::HashMap<String, Vec<u8>>;
-pub type ManufacturerData = std::collections::HashMap<u16, Vec<u8>>;
-pub type AdvertisingData = std::collections::HashMap<u8, Vec<u8>>;
+// pub type ServiceData = std::collections::HashMap<String, zvariant::OwnedValue>;
+// pub type ManufacturerData = std::collections::HashMap<u16, zvariant::OwnedValue>;
+// pub type AdvertisingData = std::collections::HashMap<u8, zvariant::OwnedValue>;
+
+pub type ServiceData<'a, 'b> = zvariant::Dict<'a, 'b>;
+pub type ManufacturerData<'a, 'b> = zvariant::Dict<'a, 'b>;
+pub type AdvertisingData<'a, 'b> = zvariant::Dict<'a, 'b>;
 
 #[macro_export(local_inner_macros)]
 #[doc(hidden)]
