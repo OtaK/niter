@@ -76,7 +76,7 @@ pub trait GattCharacteristic {
     fn stop_notify(&self) -> zbus::Result<()>;
     fn confirm(&self) -> zbus::Result<()>;
 
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "UUID")]
     fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
     #[zbus::dbus_proxy(property)]
     fn service(&self) -> zbus::fdo::Result<super::GattService>;

@@ -33,7 +33,7 @@ pub trait GattDescriptor {
     fn read_value(&self, flags: GattDescriptorReadOptions) -> zbus::Result<Vec<u8>>;
     fn write_value(&self, value: Vec<u8>, flags: GattDescriptorWriteOptions) -> zbus::Result<()>;
 
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "UUID")]
     fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
     #[zbus::dbus_proxy(property)]
     fn characteristic(&self) -> zbus::fdo::Result<super::GattCharacteristic>;

@@ -162,7 +162,7 @@ pub trait Adapter {
     fn discoverable_timeout(&self) -> zbus::fdo::Result<u32>;
     #[zbus::dbus_proxy(property)]
     fn discovering(&self) -> zbus::fdo::Result<bool>;
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "UUIDs")]
     fn uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;

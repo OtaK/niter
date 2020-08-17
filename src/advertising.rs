@@ -37,11 +37,11 @@ pub trait Advertisement {
 
     #[zbus::dbus_proxy(property)]
     fn r#type(&self) -> zbus::fdo::Result<AdvertisementType>;
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "ServiceUUIDs")]
     fn service_uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
     fn manufacturer_data(&self) -> zbus::fdo::Result<crate::ManufacturerData>;
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "SolicitUUIDs")]
     fn solicit_uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
     fn service_data(&self) -> zbus::fdo::Result<crate::ServiceData>;

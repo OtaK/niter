@@ -49,7 +49,7 @@ pub trait Device {
     fn legacy_pairing(&self) -> zbus::fdo::Result<bool>;
     #[zbus::dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;
-    #[zbus::dbus_proxy(property)]
+    #[zbus::dbus_proxy(property, name = "RSSI")]
     fn rssi(&self) -> zbus::fdo::Result<u16>;
     #[zbus::dbus_proxy(property)]
     fn tx_power(&self) -> zbus::fdo::Result<u16>;
