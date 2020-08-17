@@ -1,19 +1,20 @@
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattDescriptorReadOptions {
     offset: u16,
-    device: crate::adapter::Device,
+    device: crate::device::Device,
     link: super::GattLinkType,
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattDescriptorWriteOptions {
     offset: u16,
-    device: crate::adapter::Device,
+    device: crate::device::Device,
     link: super::GattLinkType,
     prepare_authorize: bool,
 }
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
 pub enum GattDescriptorFlags {
     Read,
     Write,
@@ -33,7 +34,7 @@ pub trait GattDescriptor {
     fn write_value(&self, value: Vec<u8>, flags: GattDescriptorWriteOptions) -> zbus::Result<()>;
 
     #[zbus::dbus_proxy(property)]
-    fn uuid(&self) -> zbus::fdo::Result<String>;
+    fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
     #[zbus::dbus_proxy(property)]
     fn characteristic(&self) -> zbus::fdo::Result<super::GattCharacteristic>;
     #[zbus::dbus_proxy(property)]

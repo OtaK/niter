@@ -2,10 +2,11 @@
 pub struct GattCharacteristicReadOptions {
     offset: u16,
     mtu: u16,
-    device: crate::adapter::Device,
+    device: crate::device::Device,
 }
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "lowercase")]
 pub enum GattWriteType {
     Command,
     Request,
@@ -17,7 +18,7 @@ pub struct GattCharacteristicWriteOptions {
     offset: u16,
     r#type: GattWriteType,
     mtu: u16,
-    device: crate::adapter::Device,
+    device: crate::device::Device,
     link: super::GattLinkType,
     prepare_authorize: bool,
 }
@@ -25,11 +26,12 @@ pub struct GattCharacteristicWriteOptions {
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattCharacteristicAcquireOptions {
     mtu: u16,
-    device: crate::adapter::Device,
+    device: crate::device::Device,
     link: super::GattLinkType,
 }
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
 pub enum GattCharacteristicFlags {
     Broadcast,
     Read,
@@ -75,7 +77,7 @@ pub trait GattCharacteristic {
     fn confirm(&self) -> zbus::Result<()>;
 
     #[zbus::dbus_proxy(property)]
-    fn uuid(&self) -> zbus::fdo::Result<String>;
+    fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
     #[zbus::dbus_proxy(property)]
     fn service(&self) -> zbus::fdo::Result<super::GattService>;
     #[zbus::dbus_proxy(property)]

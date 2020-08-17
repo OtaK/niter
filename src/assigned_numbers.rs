@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, zvariant_derive::Type, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u16)]
 pub enum AssignedRfcommNumber {
     Dun = 1,

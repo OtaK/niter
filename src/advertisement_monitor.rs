@@ -1,4 +1,4 @@
-use crate::adapter::Device;
+use crate::device::Device;
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct AdvertisementMonitor {}
@@ -22,12 +22,14 @@ pub trait AdvertisementMonitor {
     fn patterns(&self) -> zbus::fdo::Result<Vec<(u8, u8, String)>>;
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "snake_case")]
 pub enum MonitorType {
     OrPatterns,
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
 pub enum MonitorFeature {
     ControllerPatterns,
 }

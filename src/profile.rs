@@ -1,7 +1,8 @@
-use crate::adapter::Device;
+use crate::device::Device;
 use crate::assigned_numbers::AssignedRfcommNumber;
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "lowercase")]
 pub enum ServiceRole {
     Client,
     Server,
@@ -34,7 +35,7 @@ pub trait ProfileManager {
     fn register_profile(
         &self,
         profile: Profile,
-        uuid: String,
+        uuid: crate::Uuid,
         options: ProfileManagerRegisterOptions,
     ) -> zbus::Result<()>;
     fn unregister_profile(&self, profile: Profile) -> zbus::Result<()>;

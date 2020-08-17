@@ -1,4 +1,20 @@
-use crate::adapter::Device;
+use crate::device::Device;
+
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "PascalCase")]
+pub enum AgentCapability {
+    DisplayOnly,
+    DisplayYesNo,
+    KeyboardOnly,
+    NoInputNoOutput,
+    KeyboardDisplay,
+}
+
+impl Default for AgentCapability {
+    fn default() -> Self {
+        Self::KeyboardDisplay
+    }
+}
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Agent(String);
@@ -10,7 +26,7 @@ pub struct Agent(String);
 )]
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub trait AgentManager {
-    fn register_agent(&self, agent: Agent, capability: String) -> zbus::Result<()>;
+    fn register_agent(&self, agent: Agent, capability: AgentCapability) -> zbus::Result<()>;
     fn unregister_agent(&self, agent: Agent) -> zbus::Result<()>;
     fn request_default_agent(&self, agent: Agent) -> zbus::Result<()>;
 }
@@ -25,6 +41,6 @@ pub trait Agent {
     fn display_passkey(&self, device: Device, passkey: u32, entered: u16) -> zbus::Result<()>;
     fn request_confirmation(&self, device: Device, passkey: u32) -> zbus::Result<()>;
     fn request_authorization(&self, device: Device) -> zbus::Result<()>;
-    fn authorize_service(&self, uuid: String) -> zbus::Result<()>;
+    fn authorize_service(&self, uuid: crate::Uuid) -> zbus::Result<()>;
     fn cancel(&self) -> zbus::Result<()>;
 }

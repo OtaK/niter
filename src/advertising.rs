@@ -1,17 +1,21 @@
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "lowercase")]
 pub enum AdvertisementType {
     Broadcast,
     Peripheral,
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub enum SecondaryChannel {
+    #[strum(serialize = "1M")]
     OneM,
+    #[strum(serialize = "2M")]
     TwoM,
     Coded,
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
 pub enum SystemInclude {
     TxPower,
     Appearance,
@@ -19,7 +23,9 @@ pub enum SystemInclude {
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct Advertisement {}
+pub struct Advertisement {
+    object_path: String
+}
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.LEAdvertisement1",
@@ -32,21 +38,21 @@ pub trait Advertisement {
     #[zbus::dbus_proxy(property)]
     fn r#type(&self) -> zbus::fdo::Result<AdvertisementType>;
     #[zbus::dbus_proxy(property)]
-    fn service_uuids(&self) -> zbus::fdo::Result<Vec<String>>;
+    fn service_uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
-    fn manufacturer_data(&self) -> zbus::fdo::Result<std::collections::HashMap<u16, Vec<u8>>>;
+    fn manufacturer_data(&self) -> zbus::fdo::Result<crate::ManufacturerData>;
     #[zbus::dbus_proxy(property)]
-    fn solicit_uuids(&self) -> zbus::fdo::Result<Vec<String>>;
+    fn solicit_uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
-    fn service_data(&self) -> zbus::fdo::Result<std::collections::HashMap<String, Vec<u8>>>;
+    fn service_data(&self) -> zbus::fdo::Result<crate::ServiceData>;
     #[zbus::dbus_proxy(property)]
-    fn data(&self) -> zbus::fdo::Result<std::collections::HashMap<u8, Vec<u8>>>;
+    fn data(&self) -> zbus::fdo::Result<crate::AdvertisingData>;
     #[zbus::dbus_proxy(property)]
     fn discoverable(&self) -> zbus::fdo::Result<bool>;
     #[zbus::dbus_proxy(property)]
     fn discoverable_timeout(&self) -> zbus::fdo::Result<u16>;
     #[zbus::dbus_proxy(property)]
-    fn includes(&self) -> zbus::fdo::Result<Vec<String>>;
+    fn includes(&self) -> zbus::fdo::Result<Vec<SystemInclude>>;
     #[zbus::dbus_proxy(property)]
     fn local_name(&self) -> zbus::fdo::Result<String>;
     #[zbus::dbus_proxy(property)]
@@ -57,6 +63,11 @@ pub trait Advertisement {
     fn timeout(&self) -> zbus::fdo::Result<u16>;
     #[zbus::dbus_proxy(property)]
     fn secondary_channel(&self) -> zbus::fdo::Result<SecondaryChannel>;
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
+pub struct AdvertisingManager {
+    object_path: String
 }
 
 #[zbus::dbus_proxy(

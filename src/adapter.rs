@@ -1,7 +1,8 @@
 use crate::error::*;
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
+#[strum(serialize_all = "lowercase")]
 pub enum TransportFilter {
     Auto,
     BrEdr,
@@ -14,34 +15,9 @@ impl Default for TransportFilter {
     }
 }
 
-impl std::str::FromStr for TransportFilter {
-    type Err = NiterError;
-    fn from_str(s: &str) -> std::result::Result<Self, <Self as std::str::FromStr>::Err> {
-        match &*s.to_lowercase() {
-            "auto" => Ok(Self::Auto),
-            "bredr" => Ok(Self::BrEdr),
-            "le" => Ok(Self::Le),
-            _ => Err(NiterError::Other(anyhow::anyhow!(
-                "Unrecognized Tranport Filter: {}",
-                s
-            ))),
-        }
-    }
-}
-
-impl std::string::ToString for TransportFilter {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Le => "le".into(),
-            Self::BrEdr => "bredr".into(),
-            Self::Auto => "auto".into(),
-        }
-    }
-}
-
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct DiscoveryFilter {
-    uuids: Vec<uuid::Uuid>,
+    uuids: Vec<crate::Uuid>,
     rssi: Option<u16>,
     pathloss: Option<u16>,
     transport: TransportFilter,
@@ -81,8 +57,11 @@ impl DiscoveryFilter {
 impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
     type Error = NiterError;
     fn try_into(mut self) -> NiterResult<zvariant::Value<'static>> {
+        use zvariant::Type as _;
+
         let mut dict: std::collections::HashMap<&str, zvariant::Value<'_>> =
             std::collections::HashMap::new();
+
         if !self.uuids.is_empty() {
             let tmp = self
                 .uuids
@@ -94,7 +73,7 @@ impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
                         .into()
                 })
                 .try_fold(
-                    zvariant::Array::new(zvariant::Signature::from_str_unchecked("s")),
+                    zvariant::Array::new(String::signature()),
                     |mut acc, s: zvariant::Str| -> NiterResult<zvariant::Array> {
                         acc.append(zvariant::Value::Str(s))?;
                         Ok(acc)
@@ -123,59 +102,40 @@ impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
     }
 }
 
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub enum AddressType {
-    Public,
-    Random,
-}
-
-#[derive(Debug, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
 pub enum AdapterRole {
     Central,
     Peripheral,
     CentralPeripheral,
 }
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct Device {}
-
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
-pub struct Adapter<'a, 'c> {
-    #[serde(skip)]
-    connection: &'c zbus::Connection,
-    object_path: &'a zvariant::ObjectPath<'a>,
-};
-
-impl std::str::FromStr for Adapter {
-    type Err = NiterError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use std::convert::TryFrom as _;
-        let object_path = zvariant::ObjectPath::try_from(s)?;
-        Ok(Self {
-            connection,
-            object_path
-        })
-    }
+pub struct Adapter {
+    object_path: String
 }
 
-impl<'a> std::convert::TryInto<AdapterProxy<'a>> for Adapter {
-    type Error = NiterError;
-    fn try_into(self) -> NiterResult<AdapterProxy<'a>> {
-        Ok(AdapterProxy::new_for(self.0.into())?)
-    }
+crate::to_proxy_impl!(Adapter, AdapterProxy, "org.bluez");
 
+impl Adapter {
+    pub fn advertising_manager<'a>(&'a self, connection: &'a zbus::Connection) -> NiterResult<crate::advertising::AdvertisingManagerProxy<'a>> {
+        Ok(crate::advertising::AdvertisingManagerProxy::new_for(
+            connection,
+            "org.bluez",
+            &self.object_path
+        )?)
+    }
 }
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.Adapter1",
-    default_service = "org.bluez",
-    default_path = "/org/bluez/Adapter1"
+    default_service = "org.bluez"
 )]
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub trait Adapter {
     fn start_discovery(&self) -> zbus::Result<()>;
     fn stop_discovery(&self) -> zbus::Result<()>;
-    fn remove_device(&self, device: Device) -> zbus::Result<()>;
+    fn remove_device(&self, device: crate::device::Device) -> zbus::Result<()>;
     fn set_discovery_filter(&self, filter: zvariant::Value) -> zbus::Result<()>;
     fn get_discovery_filters(&self) -> zbus::Result<Vec<String>>;
     fn connect_device(&self, device: zvariant::Value) -> zbus::Result<()>;
@@ -183,7 +143,7 @@ pub trait Adapter {
     #[zbus::dbus_proxy(property)]
     fn address(&self) -> zbus::fdo::Result<String>;
     #[zbus::dbus_proxy(property)]
-    fn address_type(&self) -> zbus::fdo::Result<AddressType>;
+    fn address_type(&self) -> zbus::fdo::Result<crate::AddressType>;
     #[zbus::dbus_proxy(property)]
     fn name(&self) -> zbus::fdo::Result<String>;
     #[zbus::dbus_proxy(property)]
@@ -203,9 +163,10 @@ pub trait Adapter {
     #[zbus::dbus_proxy(property)]
     fn discovering(&self) -> zbus::fdo::Result<bool>;
     #[zbus::dbus_proxy(property)]
-    fn uuids(&self) -> zbus::fdo::Result<Vec<String>>;
+    fn uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
     #[zbus::dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;
     #[zbus::dbus_proxy(property)]
     fn roles(&self) -> zbus::fdo::Result<Vec<AdapterRole>>;
 }
+

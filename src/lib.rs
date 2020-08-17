@@ -13,15 +13,25 @@ pub mod device;
 pub mod gatt;
 pub mod profile;
 
-pub trait BlueZProxy: zvariant::Type + Sized {
-    fn object_path<'a>(&'a self) -> &'a zvariant::ObjectPath<'a>;
-    fn proxy(self, connection: &zbus::Connection) -> zbus::Proxy;
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
+#[strum(serialize_all = "kebab-case")]
+pub enum AddressType {
+    Public,
+    Random,
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+pub type ServiceData = std::collections::HashMap<String, Vec<u8>>;
+pub type ManufacturerData = std::collections::HashMap<u16, Vec<u8>>;
+pub type AdvertisingData = std::collections::HashMap<u8, Vec<u8>>;
+
+#[macro_export(local_inner_macros)]
+#[doc(hidden)]
+macro_rules! to_proxy_impl {
+    ($struct: ident, $proxy: ident, $service: expr) => {
+        impl $struct {
+            pub fn into_proxy<'a>(&'a self, connection: &'a zbus::Connection) -> NiterResult<$proxy<'a>> {
+                Ok($proxy::new_for(connection, "org.bluez", &self.object_path)?)
+            }
+        }
+    };
 }
