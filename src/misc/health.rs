@@ -1,4 +1,13 @@
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum HealthApplicationRole {
     Source,
@@ -24,8 +33,8 @@ impl zvariant::Type for HealthApplicationConfiguration {
 impl std::convert::TryInto<zvariant::Dict<'_, '_>> for HealthApplicationConfiguration {
     type Error = crate::NiterError;
     fn try_into(mut self) -> crate::NiterResult<zvariant::Dict<'static, 'static>> {
-        use zvariant::Type as _;
         use std::string::ToString as _;
+        use zvariant::Type as _;
         let mut dict = zvariant::Dict::new(String::signature(), zvariant::Value::signature());
         dict.add("DataType", self.data_type)?;
         dict.add("Role", zvariant::Value::Str(self.role.to_string().into()))?;
@@ -34,7 +43,10 @@ impl std::convert::TryInto<zvariant::Dict<'_, '_>> for HealthApplicationConfigur
         }
 
         if let Some(channel_type) = self.channel_type.take() {
-            dict.add("ChannelType", zvariant::Value::Str(channel_type.to_string().into()))?;
+            dict.add(
+                "ChannelType",
+                zvariant::Value::Str(channel_type.to_string().into()),
+            )?;
         }
 
         Ok(dict)
@@ -57,7 +69,9 @@ pub struct HealthApplication {
 impl std::str::FromStr for HealthApplication {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
@@ -70,10 +84,12 @@ crate::impl_tryfrom_zvariant!(HealthApplication);
     default_path = "/org/bluez"
 )]
 pub trait HealthManager {
-    fn create_application(&self, config: HealthApplicationConfiguration) -> zbus::Result<HealthApplication>;
+    fn create_application(
+        &self,
+        config: HealthApplicationConfiguration,
+    ) -> zbus::Result<HealthApplication>;
     fn destroy_application(&self, application: HealthApplication) -> zbus::Result<()>;
 }
-
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct HealthDevice {
@@ -83,17 +99,16 @@ pub struct HealthDevice {
 impl std::str::FromStr for HealthDevice {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
 crate::to_proxy_impl!(HealthDevice, HealthDeviceProxy, "org.bluez");
 crate::impl_tryfrom_zvariant!(HealthDevice);
 
-#[zbus::dbus_proxy(
-    interface = "org.bluez.HealthDevice1",
-    default_service = "org.bluez"
-)]
+#[zbus::dbus_proxy(interface = "org.bluez.HealthDevice1", default_service = "org.bluez")]
 pub trait HealthDevice {
     fn echo(&self) -> zbus::Result<bool>;
     fn create_channel(&self) -> zbus::Result<HealthChannel>;
@@ -107,7 +122,16 @@ pub trait HealthDevice {
     fn main_channel(&self) -> zbus::fdo::Result<HealthChannel>;
 }
 
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum HealthChannelType {
     Reliable,
@@ -124,17 +148,16 @@ pub struct HealthChannel {
 impl std::str::FromStr for HealthChannel {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
 crate::to_proxy_impl!(HealthChannel, HealthChannelProxy, "org.bluez");
 crate::impl_tryfrom_zvariant!(HealthChannel);
 
-#[zbus::dbus_proxy(
-    interface = "org.bluez.HealthChannel",
-    default_service = "org.bluez"
-)]
+#[zbus::dbus_proxy(interface = "org.bluez.HealthChannel", default_service = "org.bluez")]
 pub trait HealthChannel {
     fn acquire(&self) -> zbus::Result<std::os::unix::io::RawFd>;
     fn release(&self) -> zbus::Result<()>;

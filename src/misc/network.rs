@@ -6,7 +6,9 @@ pub struct Network {
 impl std::str::FromStr for Network {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
@@ -41,10 +43,7 @@ impl zvariant::Type for NetworkUuid {
     }
 }
 
-#[zbus::dbus_proxy(
-    interface = "org.bluez.Network1",
-    default_service = "org.bluez"
-)]
+#[zbus::dbus_proxy(interface = "org.bluez.Network1", default_service = "org.bluez")]
 pub trait Network {
     fn connect(&self, uuid: NetworkUuid) -> zbus::Result<String>;
     fn disconnect(&self) -> zbus::Result<()>;
@@ -59,13 +58,15 @@ pub trait Network {
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct NetworkServer {
-    object_path: String
+    object_path: String,
 }
 
 impl std::str::FromStr for NetworkServer {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 

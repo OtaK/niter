@@ -5,10 +5,10 @@ pub struct GattProfile<T: zvariant::Type> {
 }
 
 impl<T: zvariant::Type> GattProfile<T> {
-    fn release(&self) -> zbus::fdo::Result<()> {
+    #[allow(dead_code)]
+    fn release(self) -> zbus::fdo::Result<()> {
         // We're dropping self since that's a profile release signal
         // Side effect is that it'll drop the inner profile_impl
-        drop(self);
         Ok(())
     }
 }
@@ -85,7 +85,7 @@ impl<T: zvariant::Type> zbus::Interface for GattProfile<T> {
         name: &str,
     ) -> Option<zbus::Result<u32>> {
         if name == "Release" {
-            let _ = self.release();
+            //let _ = self.release();
             Some(Ok(1))
         } else {
             None
@@ -99,7 +99,7 @@ impl<T: zvariant::Type> zbus::Interface for GattProfile<T> {
         name: &str,
     ) -> Option<zbus::Result<u32>> {
         if name == "Release" {
-            let _ = self.release();
+            //let _ = self.release();
             Some(Ok(1))
         } else {
             None

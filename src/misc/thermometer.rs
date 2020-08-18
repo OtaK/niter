@@ -1,12 +1,14 @@
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct ThermometerManager {
-    object_path: String
+    object_path: String,
 }
 
 impl std::str::FromStr for ThermometerManager {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
@@ -26,23 +28,22 @@ pub trait ThermometerManager {
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Thermometer {
-    object_path: String
+    object_path: String,
 }
 
 impl std::str::FromStr for Thermometer {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
 crate::to_proxy_impl!(Thermometer, ThermometerProxy, "org.bluez");
 crate::impl_tryfrom_zvariant!(Thermometer);
 
-#[zbus::dbus_proxy(
-    interface = "org.bluez.Thermometer1",
-    default_service = "org.bluez"
-)]
+#[zbus::dbus_proxy(interface = "org.bluez.Thermometer1", default_service = "org.bluez")]
 pub trait Thermometer {
     #[dbus_proxy(property)]
     fn intermediate(&self) -> zbus::fdo::Result<bool>;
@@ -70,7 +71,10 @@ impl zvariant::Type for ThermometerWatcher {
 
 #[zbus::dbus_interface(name = "org.bluez.ThermometerWatcher1")]
 impl ThermometerWatcher {
-    fn measurement_received(&mut self, measurement: ThermometerMeasurement) -> zbus::fdo::Result<()> {
+    fn measurement_received(
+        &mut self,
+        measurement: ThermometerMeasurement,
+    ) -> zbus::fdo::Result<()> {
         self.current_measurement = Some(measurement);
         Ok(())
     }
@@ -78,6 +82,8 @@ impl ThermometerWatcher {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ThermometerMeasurement {
+    #[serde(skip)]
+    calculated_value: Option<f64>,
     exponent: i16,
     mantissa: i32,
     unit: ThermometerMeasurementUnit,
@@ -92,22 +98,49 @@ impl zvariant::Type for ThermometerMeasurement {
     }
 }
 
+const TWO_POW_23: i32 = 8388608;
+const MANTISSA_NAN: i32 = TWO_POW_23 - 1;
+const MANTISSA_PINF: i32 = TWO_POW_23 - 2;
+const MANTISSA_NINF: i32 = -(MANTISSA_PINF);
+const MANTISSA_NRES: i32 = -(TWO_POW_23);
+
 impl std::convert::TryFrom<zvariant::Dict<'_, '_>> for ThermometerMeasurement {
     type Error = crate::NiterError;
     fn try_from(dict: zvariant::Dict<'_, '_>) -> crate::NiterResult<Self> {
         use std::str::FromStr as _;
-        let exponent = dict.get("Exponent")?.ok_or_else(|| zvariant::Error::IncorrectType)?;
-        let mantissa = dict.get("Mantissa")?.ok_or_else(|| zvariant::Error::IncorrectType)?;
-        let unit: &str = dict.get("Unit")?.ok_or_else(|| zvariant::Error::IncorrectType)?;
+        let exponent: i16 = *dict
+            .get("Exponent")?
+            .ok_or_else(|| zvariant::Error::IncorrectType)?;
+        let mantissa: i32 = *dict
+            .get("Mantissa")?
+            .ok_or_else(|| zvariant::Error::IncorrectType)?;
+        let unit: &str = dict
+            .get("Unit")?
+            .ok_or_else(|| zvariant::Error::IncorrectType)?;
         let time = dict.get("Time")?;
         let measurement_type: Option<&str> = dict.get("Type")?;
-        let measurement_kind: &str = dict.get("Measurement")?.ok_or_else(|| zvariant::Error::IncorrectType)?;
+        let measurement_kind: &str = dict
+            .get("Measurement")?
+            .ok_or_else(|| zvariant::Error::IncorrectType)?;
+
+        let calculated_value: Option<f64> = if exponent == 0 {
+            match mantissa {
+                MANTISSA_NAN => Some(f64::NAN),
+                MANTISSA_NRES => None,
+                MANTISSA_PINF => Some(f64::INFINITY),
+                MANTISSA_NINF => Some(-f64::INFINITY),
+                _ => None,
+            }
+        } else {
+            Some(mantissa as f64 * 10.0_f64.powi(exponent.into()))
+        };
 
         Ok(Self {
-            exponent: *exponent,
-            mantissa: *mantissa,
+            calculated_value,
+            exponent,
+            mantissa,
             unit: ThermometerMeasurementUnit::from_str(&unit)?,
-            time: time.map(|t| *t),
+            time: time.copied(),
             r#type: measurement_type.and_then(|s| ThermometerMeasurementType::from_str(s).ok()),
             measurement: ThermometerMeasurementKind::from_str(measurement_kind)?,
         })
@@ -123,7 +156,16 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for ThermometerMeasurement {
     }
 }
 
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum ThermometerMeasurementUnit {
     Celsius,
@@ -132,7 +174,16 @@ pub enum ThermometerMeasurementUnit {
 
 crate::impl_tryfrom_zvariant!(ThermometerMeasurementUnit);
 
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum ThermometerMeasurementType {
     Armpit,
@@ -148,7 +199,16 @@ pub enum ThermometerMeasurementType {
 
 crate::impl_tryfrom_zvariant!(ThermometerMeasurementType);
 
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum ThermometerMeasurementKind {
     Final,

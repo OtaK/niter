@@ -71,7 +71,7 @@ impl<'a> From<zvariant::Array<'a>> for UuidArray {
         use std::convert::TryInto as _;
         Self(
             v.get()
-                .into_iter()
+                .iter()
                 .filter_map(|item| item.try_into().ok())
                 .filter_map(|item: String| uuid::Uuid::parse_str(&item).ok())
                 .map(Into::into)

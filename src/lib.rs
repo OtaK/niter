@@ -63,7 +63,7 @@ impl<T: zvariant::Type> From<Vec<T>> for ZvariantableArray<T> {
 macro_rules! to_proxy_impl {
     ($struct: ident, $proxy: ident, $service: expr) => {
         impl $struct {
-            pub fn into_proxy<'a>(
+            pub fn get_proxy<'a>(
                 &'a self,
                 connection: &'a zbus::Connection,
             ) -> crate::error::NiterResult<$proxy<'a>> {
