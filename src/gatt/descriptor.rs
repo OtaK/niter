@@ -13,7 +13,16 @@ pub struct GattDescriptorWriteOptions {
     prepare_authorize: bool,
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum GattDescriptorFlags {
     Read,

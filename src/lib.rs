@@ -15,7 +15,16 @@ pub mod profile;
 
 // TODO: Fix all proxies
 
-#[derive(Debug, Clone, Copy, zvariant_derive::Type, strum::Display, strum::EnumString, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    zvariant_derive::Type,
+    strum::Display,
+    strum::EnumString,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum AddressType {
     Public,
@@ -53,7 +62,10 @@ impl<T: zvariant::Type> From<Vec<T>> for ZvariantableArray<T> {
 macro_rules! to_proxy_impl {
     ($struct: ident, $proxy: ident, $service: expr) => {
         impl $struct {
-            pub fn into_proxy<'a>(&'a self, connection: &'a zbus::Connection) -> NiterResult<$proxy<'a>> {
+            pub fn into_proxy<'a>(
+                &'a self,
+                connection: &'a zbus::Connection,
+            ) -> NiterResult<$proxy<'a>> {
                 Ok($proxy::new_for(connection, "org.bluez", &self.object_path)?)
             }
         }
@@ -64,7 +76,6 @@ macro_rules! to_proxy_impl {
 #[doc(hidden)]
 macro_rules! impl_tryfrom_zvariant {
     ($thing:ident) => {
-
         impl<'a> std::convert::TryFrom<zvariant::Value<'a>> for $thing {
             type Error = crate::NiterError;
             fn try_from(v: zvariant::Value<'a>) -> crate::NiterResult<Self> {
@@ -76,8 +87,8 @@ macro_rules! impl_tryfrom_zvariant {
         impl std::convert::TryFrom<zvariant::OwnedValue> for $thing {
             type Error = crate::NiterError;
             fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {
-                use std::str::FromStr as _;
                 use std::convert::TryInto as _;
+                use std::str::FromStr as _;
                 let s: String = v.try_into()?;
                 Ok(Self::from_str(&s)?)
             }
@@ -94,11 +105,10 @@ macro_rules! impl_tryfrom_zvariant {
                     |mut acc, item| -> crate::NiterResult<Vec<$thing>> {
                         acc.push(item.try_into()?);
                         Ok(acc)
-                    })?;
+                    },
+                )?;
                 Ok(Self(inner))
             }
         }
     };
 }
-
-

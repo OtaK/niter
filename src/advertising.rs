@@ -1,4 +1,13 @@
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum AdvertisementType {
     Broadcast,
@@ -7,7 +16,16 @@ pub enum AdvertisementType {
 
 crate::impl_tryfrom_zvariant!(AdvertisementType);
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 pub enum SecondaryChannel {
     #[strum(serialize = "1M")]
     OneM,
@@ -18,7 +36,16 @@ pub enum SecondaryChannel {
 
 crate::impl_tryfrom_zvariant!(SecondaryChannel);
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum SystemInclude {
     TxPower,
@@ -30,7 +57,7 @@ crate::impl_tryfrom_zvariant!(SystemInclude);
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Advertisement {
-    object_path: String
+    object_path: String,
 }
 
 #[zbus::dbus_proxy(
@@ -73,7 +100,7 @@ pub trait Advertisement {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
 pub struct AdvertisingManager {
-    object_path: String
+    object_path: String,
 }
 
 #[zbus::dbus_proxy(
@@ -96,5 +123,7 @@ pub trait AdvertisingManager {
     #[dbus_proxy(property)]
     fn supported_includes(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SystemInclude>>;
     #[dbus_proxy(property)]
-    fn supported_secondary_channels(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SecondaryChannel>>;
+    fn supported_secondary_channels(
+        &self,
+    ) -> zbus::fdo::Result<crate::ZvariantableArray<SecondaryChannel>>;
 }

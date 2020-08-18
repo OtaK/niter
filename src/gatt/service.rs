@@ -8,7 +8,9 @@ pub trait GattService {
     #[dbus_proxy(property)]
     fn device(&self) -> zbus::fdo::Result<crate::device::Device>;
     #[dbus_proxy(property)]
-    fn includes(&self) -> zbus::fdo::Result<crate::ZvariantableArray<crate::advertising::SystemInclude>>;
+    fn includes(
+        &self,
+    ) -> zbus::fdo::Result<crate::ZvariantableArray<crate::advertising::SystemInclude>>;
     #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }
@@ -21,7 +23,9 @@ pub struct GattService {
 impl std::str::FromStr for GattService {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 

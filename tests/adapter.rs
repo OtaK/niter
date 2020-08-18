@@ -13,10 +13,10 @@ fn get_default_adapter_uuids() {
     println!("UUIDS: {:?}", uuids);
 }
 
-// #[test]
-// fn enumerate_adapters() {
-//     let connection = zbus::Connection::new_system().unwrap();
-//     for adapter in niter::adapter::AdapterProxy::enumerate_adapters(&connection).unwrap() {
-
-//     }
-// }
+#[test]
+fn enumerate_adapters() {
+    let connection = zbus::Connection::new_system().unwrap();
+    for adapter in niter::adapter::AdapterProxy::enumerate_adapters(&connection).unwrap() {
+        println!("{:?}", adapter);
+    }
+}

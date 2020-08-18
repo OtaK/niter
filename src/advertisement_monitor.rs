@@ -12,13 +12,13 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for AdvertisementRssiThresholds
             high_rssi_threshold,
             high_rssi_threshold_timer,
             low_rssi_threshold,
-            low_rssi_threshold_timer
+            low_rssi_threshold_timer,
         ) = zstruct.try_into()?;
         Ok(Self(
             high_rssi_threshold,
             high_rssi_threshold_timer,
             low_rssi_threshold,
-            low_rssi_threshold_timer
+            low_rssi_threshold_timer,
         ))
     }
 }
@@ -40,13 +40,17 @@ impl<'a> std::convert::TryFrom<zvariant::Value<'a>> for AdvertisementPattern {
     type Error = crate::NiterError;
     fn try_from(value: zvariant::Value<'a>) -> Result<Self, Self::Error> {
         use std::convert::TryInto as _;
-        let zstruct: zvariant::Structure = value.downcast().ok_or_else(|| zvariant::Error::IncorrectType)?;
+        let zstruct: zvariant::Structure = value
+            .downcast()
+            .ok_or_else(|| zvariant::Error::IncorrectType)?;
         let (start_position, ad_data_type, contents) = zstruct.try_into()?;
         Ok(Self(start_position, ad_data_type, contents))
     }
 }
 
-impl std::convert::TryFrom<zvariant::OwnedValue> for crate::ZvariantableArray<AdvertisementPattern> {
+impl std::convert::TryFrom<zvariant::OwnedValue>
+    for crate::ZvariantableArray<AdvertisementPattern>
+{
     type Error = crate::NiterError;
     fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {
         use std::convert::TryInto as _;
@@ -57,14 +61,15 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for crate::ZvariantableArray<Ad
             |mut acc, item| -> crate::NiterResult<Vec<AdvertisementPattern>> {
                 acc.push(item.try_into()?);
                 Ok(acc)
-            })?;
+            },
+        )?;
         Ok(Self(inner))
     }
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct AdvertisementMonitor {
-    object_path: String
+    object_path: String,
 }
 
 #[zbus::dbus_proxy(
@@ -81,12 +86,22 @@ pub trait AdvertisementMonitor {
     #[dbus_proxy(property)]
     fn r#type(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    fn rssi_thresholds_and_timers(&self) -> zbus::fdo::Result<AdvertisementRssiThresholdsAndTimers>;
+    fn rssi_thresholds_and_timers(&self)
+        -> zbus::fdo::Result<AdvertisementRssiThresholdsAndTimers>;
     #[dbus_proxy(property)]
     fn patterns(&self) -> zbus::fdo::Result<crate::ZvariantableArray<AdvertisementPattern>>;
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "snake_case")]
 pub enum MonitorType {
     OrPatterns,
@@ -94,7 +109,16 @@ pub enum MonitorType {
 
 crate::impl_tryfrom_zvariant!(MonitorType);
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum MonitorFeature {
     ControllerPatterns,

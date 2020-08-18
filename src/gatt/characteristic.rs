@@ -5,7 +5,16 @@ pub struct GattCharacteristicReadOptions {
     device: crate::device::Device,
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum GattWriteType {
     Command,
@@ -32,7 +41,16 @@ pub struct GattCharacteristicAcquireOptions {
     link: super::GattLinkType,
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum GattCharacteristicFlags {
     Broadcast,
@@ -106,7 +124,9 @@ pub struct GattCharacteristic {
 impl std::str::FromStr for GattCharacteristic {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 

@@ -1,7 +1,16 @@
-use crate::device::Device;
 use crate::assigned_numbers::AssignedRfcommNumber;
+use crate::device::Device;
 
-#[derive(Debug, Clone, Copy, strum::EnumString, strum::Display, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::EnumString,
+    strum::Display,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum ServiceRole {
     Client,

@@ -1,5 +1,5 @@
-use crate::impl_tryfrom_zvariant;
 use crate::error::*;
+use crate::impl_tryfrom_zvariant;
 
 const BASE_UUID: (u32, u16, u16, u64) = (0x00000000, 0x0000, 0x1000, 0x800000805F9B34FB);
 
@@ -69,22 +69,24 @@ pub struct UuidArray(Vec<Uuid>);
 impl<'a> From<zvariant::Array<'a>> for UuidArray {
     fn from(v: zvariant::Array<'a>) -> Self {
         use std::convert::TryInto as _;
-        Self(v
-            .get()
-            .into_iter()
-            .filter_map(|item| item.try_into().ok())
-            .filter_map(|item: String| uuid::Uuid::parse_str(&item).ok())
-            .map(Into::into)
-            .collect()
+        Self(
+            v.get()
+                .into_iter()
+                .filter_map(|item| item.try_into().ok())
+                .filter_map(|item: String| uuid::Uuid::parse_str(&item).ok())
+                .map(Into::into)
+                .collect(),
         )
     }
 }
 
 impl From<zvariant::OwnedValue> for UuidArray {
     fn from(v: zvariant::OwnedValue) -> Self {
-        use zvariant::Type as _;
         use std::convert::TryInto as _;
-        let a: zvariant::Array<'_> = v.try_into().unwrap_or_else(|_| zvariant::Array::new(UuidArray::signature()));
+        use zvariant::Type as _;
+        let a: zvariant::Array<'_> = v
+            .try_into()
+            .unwrap_or_else(|_| zvariant::Array::new(UuidArray::signature()));
         a.into()
     }
 }

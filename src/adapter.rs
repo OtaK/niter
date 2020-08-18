@@ -1,7 +1,16 @@
 use crate::error::*;
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    serde_repr::Serialize_repr,
+    serde_repr::Deserialize_repr,
+    zvariant_derive::Type,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum TransportFilter {
     Auto,
@@ -102,7 +111,16 @@ impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
     }
 }
 
-#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    zvariant_derive::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[strum(serialize_all = "kebab-case")]
 pub enum AdapterRole {
     Central,
@@ -114,13 +132,23 @@ crate::impl_tryfrom_zvariant!(AdapterRole);
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
 pub struct Adapter {
-    object_path: String
+    object_path: String,
+}
+
+impl<'a> From<std::borrow::Cow<'a, String>> for Adapter {
+    fn from(s: std::borrow::Cow<'a, String>) -> Self {
+        Self {
+            object_path: s.to_string(),
+        }
+    }
 }
 
 impl std::str::FromStr for Adapter {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self { object_path: s.into() })
+        Ok(Self {
+            object_path: s.into(),
+        })
     }
 }
 
@@ -128,11 +156,14 @@ crate::impl_tryfrom_zvariant!(Adapter);
 crate::to_proxy_impl!(Adapter, AdapterProxy, "org.bluez");
 
 impl Adapter {
-    pub fn advertising_manager<'a>(&'a self, connection: &'a zbus::Connection) -> NiterResult<crate::advertising::AdvertisingManagerProxy<'a>> {
+    pub fn advertising_manager<'a>(
+        &'a self,
+        connection: &'a zbus::Connection,
+    ) -> NiterResult<crate::advertising::AdvertisingManagerProxy<'a>> {
         Ok(crate::advertising::AdvertisingManagerProxy::new_for(
             connection,
             "org.bluez",
-            &self.object_path
+            &self.object_path,
         )?)
     }
 }
@@ -183,34 +214,38 @@ pub trait Adapter {
 
 impl<'a> std::ops::Deref for AdapterProxy<'a> {
     type Target = zbus::Proxy<'a>;
-    fn deref(&self) -> &Self::Target { &self.0 }
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
-// type ObjectManagerItemList = std::collections::HashMap<
-//     String,
-//     std::collections::HashMap<
-//         String,
-//         std::collections::HashMap<
-//             String,
-//             zvariant::OwnedValue
-//         >
-//     >
-// >;
+#[derive(Debug)]
+pub struct AdapterEnumerator<'a> {
+    paths: Vec<std::borrow::Cow<'a, String>>,
+    connection: &'a zbus::Connection,
+}
 
-// impl<'a> AdapterProxy<'a> {
-    // FIXME: This doesn't work because lifetimes are fundamentally broken on zbus's side
-    // pub fn enumerate_adapters(connection: &'a zbus::Connection) -> NiterResult<Vec<Self>> {
-    //     let object_manager = zbus::fdo::ObjectManagerProxy::new_for(connection, "org.bluez", "/")?;
-    //     let managed_objects = object_manager.get_managed_objects()?;
-    //     let iter = managed_objects
-    //         .iter()
-    //         .filter(|(_, contents)| contents.contains_key("org.bluez.Adapter1"))
-    //         .map(move |(path, _)| zbus::Proxy::new(connection, "org.bluez.Adapter1", "org.bluez", path))
-    //         .map(|proxy| Self(proxy.unwrap()))
-    //         .collect();
+impl std::iter::Iterator for AdapterEnumerator<'_> {
+    type Item = Adapter;
+    fn next(&mut self) -> std::option::Option<Self::Item> {
+        self.paths.pop().map(Into::into)
+    }
+}
 
-    //     Ok(iter)
+impl<'a> AdapterProxy<'a> {
+    pub fn enumerate_adapters(
+        connection: &'a zbus::Connection,
+    ) -> NiterResult<AdapterEnumerator<'a>> {
+        let object_manager = zbus::fdo::ObjectManagerProxy::new_for(connection, "org.bluez", "/")?;
+        let managed_objects = object_manager.get_managed_objects()?;
+        let mut paths: Vec<std::borrow::Cow<String>> = managed_objects
+            .into_iter()
+            .filter(|(_, contents)| contents.contains_key("org.bluez.Adapter1"))
+            .map(|(path, _)| std::borrow::Cow::Owned(path))
+            .collect();
 
-    // }
-// }
+        paths.reverse();
 
+        Ok(AdapterEnumerator { connection, paths })
+    }
+}
