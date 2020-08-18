@@ -1,7 +1,16 @@
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Device {
+    object_path: String
 }
 
+impl std::str::FromStr for Device {
+    type Err = crate::NiterError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self { object_path: s.into() })
+    }
+}
+
+crate::impl_tryfrom_zvariant!(Device);
 
 #[zbus::dbus_proxy(
     interface = "org.bluez.Device1",
@@ -43,8 +52,8 @@ pub trait Device {
     fn wake_allowed(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
     fn alias(&self) -> zbus::fdo::Result<String>;
-    // #[dbus_proxy(property)]
-    // fn adapter(&self) -> zbus::fdo::Result<crate::adapter::Adapter>; // FIXME:
+    #[dbus_proxy(property)]
+    fn adapter(&self) -> zbus::fdo::Result<crate::adapter::Adapter>;
     #[dbus_proxy(property)]
     fn legacy_pairing(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]

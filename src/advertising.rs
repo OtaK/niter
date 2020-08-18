@@ -1,41 +1,32 @@
-// use crate::impl_tryfrom_zvariant;
-// use crate::error::*;
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "lowercase")]
+pub enum AdvertisementType {
+    Broadcast,
+    Peripheral,
+}
 
-// #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-// #[strum(serialize_all = "lowercase")]
-// pub enum AdvertisementType {
-//     Broadcast,
-//     Peripheral,
-// }
+crate::impl_tryfrom_zvariant!(AdvertisementType);
 
-// impl_tryfrom_zvariant!(AdvertisementType);
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+pub enum SecondaryChannel {
+    #[strum(serialize = "1M")]
+    OneM,
+    #[strum(serialize = "2M")]
+    TwoM,
+    Coded,
+}
 
-pub type AdvertisementType = String;
+crate::impl_tryfrom_zvariant!(SecondaryChannel);
 
-// #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-// pub enum SecondaryChannel {
-//     #[strum(serialize = "1M")]
-//     OneM,
-//     #[strum(serialize = "2M")]
-//     TwoM,
-//     Coded,
-// }
+#[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[strum(serialize_all = "kebab-case")]
+pub enum SystemInclude {
+    TxPower,
+    Appearance,
+    LocalName,
+}
 
-// impl_tryfrom_zvariant!(SecondaryChannel);
-
-pub type SecondaryChannel = String;
-
-// #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-// #[strum(serialize_all = "kebab-case")]
-// pub enum SystemInclude {
-//     TxPower,
-//     Appearance,
-//     LocalName,
-// }
-
-// impl_tryfrom_zvariant!(SystemInclude);
-
-pub type SystemInclude = String;
+crate::impl_tryfrom_zvariant!(SystemInclude);
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Advertisement {
@@ -57,7 +48,7 @@ pub trait Advertisement {
     #[dbus_proxy(property)]
     fn manufacturer_data(&self) -> zbus::fdo::Result<crate::ManufacturerData>;
     #[zbus::dbus_proxy(property, name = "SolicitUUIDs")]
-    fn solicit_uuids(&self) -> zbus::fdo::Result<Vec<crate::Uuid>>;
+    fn solicit_uuids(&self) -> zbus::fdo::Result<crate::UuidArray>;
     #[dbus_proxy(property)]
     fn service_data(&self) -> zbus::fdo::Result<crate::ServiceData>;
     #[dbus_proxy(property)]
@@ -67,7 +58,7 @@ pub trait Advertisement {
     #[dbus_proxy(property)]
     fn discoverable_timeout(&self) -> zbus::fdo::Result<u16>;
     #[dbus_proxy(property)]
-    fn includes(&self) -> zbus::fdo::Result<Vec<SystemInclude>>;
+    fn includes(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SystemInclude>>;
     #[dbus_proxy(property)]
     fn local_name(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
@@ -103,7 +94,7 @@ pub trait AdvertisingManager {
     #[dbus_proxy(property)]
     fn supported_instances(&self) -> zbus::fdo::Result<u8>;
     #[dbus_proxy(property)]
-    fn supported_includes(&self) -> zbus::fdo::Result<Vec<SystemInclude>>;
+    fn supported_includes(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SystemInclude>>;
     #[dbus_proxy(property)]
-    fn supported_secondary_channels(&self) -> zbus::fdo::Result<Vec<SecondaryChannel>>;
+    fn supported_secondary_channels(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SecondaryChannel>>;
 }

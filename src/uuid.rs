@@ -21,6 +21,11 @@ impl SdpShortUUID<u32> for uuid::Uuid {}
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Uuid(uuid::Uuid);
+impl Default for Uuid {
+    fn default() -> Self {
+        Self(uuid::Uuid::nil())
+    }
+}
 
 impl std::str::FromStr for Uuid {
     type Err = NiterError;
@@ -63,17 +68,13 @@ pub struct UuidArray(Vec<Uuid>);
 
 impl<'a> From<zvariant::Array<'a>> for UuidArray {
     fn from(v: zvariant::Array<'a>) -> Self {
+        use std::convert::TryInto as _;
         Self(v
             .get()
             .into_iter()
-            .map(std::convert::TryInto::try_into)
-            .map(Result::<String, zvariant::Error>::ok)
-            .filter(Option::is_some)
-            .map(Option::unwrap)
-            .map(|a| uuid::Uuid::parse_str(&a))
-            .filter(Result::is_ok)
-            .map(Result::unwrap)
-            .map(crate::Uuid::from)
+            .filter_map(|item| item.try_into().ok())
+            .filter_map(|item: String| uuid::Uuid::parse_str(&item).ok())
+            .map(Into::into)
             .collect()
         )
     }

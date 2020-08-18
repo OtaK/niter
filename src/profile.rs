@@ -8,6 +8,8 @@ pub enum ServiceRole {
     Server,
 }
 
+crate::impl_tryfrom_zvariant!(ServiceRole);
+
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct ProfileManagerRegisterOptions {
     name: String,

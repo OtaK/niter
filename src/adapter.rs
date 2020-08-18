@@ -1,5 +1,4 @@
 use crate::error::*;
-use crate::impl_tryfrom_zvariant;
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, strum::Display, strum::EnumString, serde_repr::Serialize_repr, serde_repr::Deserialize_repr, zvariant_derive::Type)]
@@ -111,13 +110,21 @@ pub enum AdapterRole {
     CentralPeripheral,
 }
 
-impl_tryfrom_zvariant!(AdapterRole);
+crate::impl_tryfrom_zvariant!(AdapterRole);
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
 pub struct Adapter {
     object_path: String
 }
 
+impl std::str::FromStr for Adapter {
+    type Err = crate::NiterError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self { object_path: s.into() })
+    }
+}
+
+crate::impl_tryfrom_zvariant!(Adapter);
 crate::to_proxy_impl!(Adapter, AdapterProxy, "org.bluez");
 
 impl Adapter {
@@ -171,8 +178,7 @@ pub trait Adapter {
     #[dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    // fn roles(&self) -> zbus::fdo::Result<Vec<AdapterRole>>;
-    fn roles(&self) -> zbus::fdo::Result<Vec<String>>;
+    fn roles(&self) -> zbus::fdo::Result<crate::ZvariantableArray<AdapterRole>>;
 }
 
 impl<'a> std::ops::Deref for AdapterProxy<'a> {
