@@ -39,7 +39,7 @@ pub struct Profile(String);
 #[zbus::dbus_proxy(
     interface = "org.bluez.ProfileManager1",
     default_service = "org.bluez",
-    default_path = "/org/bluez/ProfileManager1"
+    default_path = "/org/bluez"
 )]
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub trait ProfileManager {

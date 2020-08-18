@@ -9,14 +9,11 @@ fn get_default_adapter() {
 fn get_default_adapter_uuids() {
     let connection = zbus::Connection::new_system().unwrap();
     let adapter_proxy = niter::adapter::AdapterProxy::new(&connection).unwrap();
-    let uuids = adapter_proxy.uuids().unwrap();
-    println!("UUIDS: {:?}", uuids);
+    adapter_proxy.uuids().unwrap();
 }
 
 #[test]
 fn enumerate_adapters() {
     let connection = zbus::Connection::new_system().unwrap();
-    for adapter in niter::adapter::AdapterProxy::enumerate_adapters(&connection).unwrap() {
-        println!("{:?}", adapter);
-    }
+    niter::adapter::AdapterProxy::enumerate_adapters(&connection).unwrap();
 }

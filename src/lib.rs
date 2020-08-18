@@ -13,7 +13,8 @@ pub mod device;
 pub mod gatt;
 pub mod profile;
 
-// TODO: Fix all proxies
+mod misc;
+pub use self::misc::*;
 
 #[derive(
     Debug,
@@ -65,8 +66,8 @@ macro_rules! to_proxy_impl {
             pub fn into_proxy<'a>(
                 &'a self,
                 connection: &'a zbus::Connection,
-            ) -> NiterResult<$proxy<'a>> {
-                Ok($proxy::new_for(connection, "org.bluez", &self.object_path)?)
+            ) -> crate::error::NiterResult<$proxy<'a>> {
+                Ok($proxy::new_for(connection, $service, &self.object_path)?)
             }
         }
     };
