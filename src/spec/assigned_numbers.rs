@@ -3,6 +3,8 @@
     Clone,
     Copy,
     zvariant_derive::Type,
+    num_enum::TryFromPrimitive,
+    num_enum::IntoPrimitive,
     serde_repr::Serialize_repr,
     serde_repr::Deserialize_repr,
 )]

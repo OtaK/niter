@@ -72,6 +72,12 @@ impl std::ops::Deref for Uuid {
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct UuidArray(Vec<Uuid>);
 
+impl From<Vec<Uuid>> for UuidArray {
+    fn from(inner: Vec<Uuid>) -> Self {
+        Self(inner)
+    }
+}
+
 impl<'a> From<zvariant::Array<'a>> for UuidArray {
     fn from(v: zvariant::Array<'a>) -> Self {
         use std::convert::TryInto as _;

@@ -64,7 +64,7 @@ impl DiscoveryFilter {
 }
 
 impl std::convert::TryInto<zvariant::Value<'_>> for DiscoveryFilter {
-    type Error = NiterError;
+    type Error = crate::NiterError;
     fn try_into(mut self) -> NiterResult<zvariant::Value<'static>> {
         use zvariant::Type as _;
 
@@ -191,17 +191,29 @@ pub trait Adapter {
     #[dbus_proxy(property)]
     fn alias(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
+    fn set_alias(&self, alias: &str) -> zbus::fdo::Result<()>;
+    #[dbus_proxy(property)]
     fn class(&self) -> zbus::fdo::Result<u32>;
     #[dbus_proxy(property)]
     fn powered(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
+    fn set_powered(&self, powered: bool) -> zbus::fdo::Result<()>;
+    #[dbus_proxy(property)]
     fn discoverable(&self) -> zbus::fdo::Result<bool>;
+    #[dbus_proxy(property)]
+    fn set_discoverable(&self, discoverable: bool) -> zbus::fdo::Result<()>;
     #[dbus_proxy(property)]
     fn pairable(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
+    fn set_pairable(&self, pairable: bool) -> zbus::fdo::Result<()>;
+    #[dbus_proxy(property)]
     fn pairable_timeout(&self) -> zbus::fdo::Result<u32>;
     #[dbus_proxy(property)]
+    fn set_pairable_timeout(&self, timeout: u32) -> zbus::fdo::Result<()>;
+    #[dbus_proxy(property)]
     fn discoverable_timeout(&self) -> zbus::fdo::Result<u32>;
+    #[dbus_proxy(property)]
+    fn set_discoverable_timeout(&self, timeout: u32) -> zbus::fdo::Result<()>;
     #[dbus_proxy(property)]
     fn discovering(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property, name = "UUIDs")]

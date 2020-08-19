@@ -1,5 +1,5 @@
-use crate::assigned_numbers::AssignedRfcommNumber;
 use crate::device::Device;
+use crate::spec::assigned_numbers::AssignedRfcommNumber;
 
 #[derive(
     Debug,

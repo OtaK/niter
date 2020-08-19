@@ -28,3 +28,4 @@ anyhow = "1.0"
 uuid = { version = "0.8", features = ["serde"] }
 serde_repr = "0.1"
 strum = { version = "0.19", features = ["derive"] }
+num_enum = "0.5.1"

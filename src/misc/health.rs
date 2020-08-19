@@ -162,7 +162,7 @@ pub trait HealthChannel {
     fn acquire(&self) -> zbus::Result<std::os::unix::io::RawFd>;
     fn release(&self) -> zbus::Result<()>;
 
-    #[dbus_proxy(property)]
+    #[dbus_proxy(property, name = "Type")]
     fn r#type(&self) -> zbus::fdo::Result<HealthChannelType>;
     #[dbus_proxy(property)]
     fn device(&self) -> zbus::fdo::Result<HealthDevice>;

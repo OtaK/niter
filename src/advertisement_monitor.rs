@@ -83,7 +83,7 @@ pub trait AdvertisementMonitor {
     fn device_found(&self, device: Device) -> zbus::Result<()>;
     fn device_lost(&self, device: Device) -> zbus::Result<()>;
 
-    #[dbus_proxy(property)]
+    #[dbus_proxy(property, name = "Type")]
     fn r#type(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
     fn rssi_thresholds_and_timers(&self)
