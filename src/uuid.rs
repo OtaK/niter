@@ -27,6 +27,12 @@ impl Default for Uuid {
     }
 }
 
+impl std::fmt::Display for Uuid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0.to_hyphenated().to_string())
+    }
+}
+
 impl std::str::FromStr for Uuid {
     type Err = NiterError;
     fn from_str(s: &str) -> NiterResult<Self> {
@@ -88,5 +94,15 @@ impl From<zvariant::OwnedValue> for UuidArray {
             .try_into()
             .unwrap_or_else(|_| zvariant::Array::new(UuidArray::signature()));
         a.into()
+    }
+}
+
+impl<'a> Into<zvariant::Structure<'a>> for UuidArray {
+    fn into(self) -> zvariant::Structure<'a> {
+        let mut ret = zvariant::Structure::new();
+        for item in self.0.into_iter() {
+            ret = ret.add_field(zvariant::Value::Str(item.to_string().into()));
+        }
+        ret
     }
 }
