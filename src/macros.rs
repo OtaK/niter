@@ -35,22 +35,6 @@ macro_rules! impl_tryfrom_zvariant {
                 Ok(Self::from_str(&s)?)
             }
         }
-        impl std::convert::TryFrom<zvariant::OwnedValue> for crate::ZvariantableArray<$thing> {
-            type Error = crate::NiterError;
-            fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {
-                use std::convert::TryInto as _;
-                let zva: zvariant::Array = v.try_into()?;
-                let zva_len = zva.len();
-                let inner: Vec<$thing> = zva.iter().cloned().try_fold(
-                    Vec::with_capacity(zva_len),
-                    |mut acc, item| -> crate::NiterResult<Vec<$thing>> {
-                        acc.push(item.try_into()?);
-                        Ok(acc)
-                    },
-                )?;
-                Ok(Self(inner))
-            }
-        }
     };
 }
 

@@ -48,25 +48,6 @@ impl<'a> std::convert::TryFrom<zvariant::Value<'a>> for AdvertisementPattern {
     }
 }
 
-impl std::convert::TryFrom<zvariant::OwnedValue>
-    for crate::ZvariantableArray<AdvertisementPattern>
-{
-    type Error = crate::NiterError;
-    fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {
-        use std::convert::TryInto as _;
-        let zva: zvariant::Array = v.try_into()?;
-        let zva_len = zva.len();
-        let inner: Vec<AdvertisementPattern> = zva.iter().cloned().try_fold(
-            Vec::with_capacity(zva_len),
-            |mut acc, item| -> crate::NiterResult<Vec<AdvertisementPattern>> {
-                acc.push(item.try_into()?);
-                Ok(acc)
-            },
-        )?;
-        Ok(Self(inner))
-    }
-}
-
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct AdvertisementMonitor {
     object_path: String,

@@ -3,13 +3,13 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 #[repr(transparent)]
 pub struct ZvariantableMap<
-    K: std::hash::Hash + Eq + zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
+    K: std::hash::Hash + Eq + zvariant::Type + zvariant::Basic + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
     V: zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>
 >(HashMap<K, V>);
 
 impl<K, V> std::ops::Deref for ZvariantableMap<K, V>
 where
-    K: std::hash::Hash + Eq + zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
+    K: std::hash::Hash + Eq + zvariant::Type + zvariant::Basic + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
     V: zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>
 {
     type Target = HashMap<K, V>;
@@ -20,7 +20,7 @@ where
 
 impl<K, V> From<HashMap<K, V>> for ZvariantableMap<K, V>
 where
-    K: std::hash::Hash + Eq + zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
+    K: std::hash::Hash + Eq + zvariant::Type + zvariant::Basic + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
     V: zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>
 {
     fn from(value: HashMap<K, V>) -> Self {
@@ -29,7 +29,7 @@ where
 }
 
 impl<K, V> std::convert::TryFrom<zvariant::OwnedValue> for ZvariantableMap<K, V> where
-    K: std::hash::Hash + Eq + zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
+    K: std::hash::Hash + Eq + zvariant::Type + zvariant::Basic + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>,
     V: zvariant::Type + std::convert::TryFrom<zvariant::Value<'static>> + std::convert::TryFrom<zvariant::OwnedValue>
 {
     type Error = crate::NiterError;

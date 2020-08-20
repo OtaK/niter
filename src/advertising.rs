@@ -81,79 +81,66 @@ pub struct Advertisement {
 }
 
 //#[zbus::dbus_interface(name = "org.bluez.LEAdvertisement1")]
+#[allow(dead_code)]
 impl Advertisement {
     fn release(&self) -> zbus::fdo::Result<()> {
         Ok(())
     }
 
-    // #[dbus_interface(property, name = "Type")]
     fn advertisement_type(&self) -> AdvertisementType {
         self.r#type
     }
-    // #[dbus_interface(property, name = "ServiceUUIDs")]
-    fn service_uuids(&self) -> crate::UuidArray {
-        self.service_uuids.into()
+    fn service_uuids(&self) -> &Vec<crate::Uuid> {
+        &self.service_uuids
     }
-    // #[dbus_interface(property)]
     fn manufacturer_data(&self) -> zvariant::Dict<'_, '_> {
         use zvariant::Type as _;
         let mut dict = zvariant::Dict::new(u16::signature(), <Vec<u8>>::signature());
-        for (k, v) in self.manufacturer_data {
-            dict.append(zvariant::Value::U16(k.into()), zvariant::Value::Array(v.into()));
+        for (k, v) in self.manufacturer_data.iter() {
+            let _ = dict.append(zvariant::Value::U16(*k), zvariant::Value::Array(v.into()));
         }
         dict
     }
-    // #[dbus_interface(property, name = "SolicitUUIDs")]
-    fn solicit_uuids(&self) -> crate::UuidArray {
-        self.solicit_uuids.into()
+    fn solicit_uuids(&self) -> &Vec<crate::Uuid> {
+        &self.solicit_uuids
     }
-    // #[dbus_interface(property)]
     fn service_data(&self) -> zvariant::Dict<'_, '_> {
         use zvariant::Type as _;
         let mut dict = zvariant::Dict::new(String::signature(), <Vec<u8>>::signature());
-        for (k, v) in *self.service_data {
-            dict.append(zvariant::Value::Str(k.into()), zvariant::Value::Array(v.into()));
+        for (k, v) in self.service_data.iter() {
+            let _ = dict.append(zvariant::Value::Str(k.clone().into()), zvariant::Value::Array(v.into()));
         }
         dict
     }
-    // #[dbus_interface(property)]
     fn data(&self) -> zvariant::Dict<'_, '_> {
         use zvariant::Type as _;
         let mut dict = zvariant::Dict::new(u8::signature(), <Vec<u8>>::signature());
-        for (k, v) in self.data {
-            dict.append(zvariant::Value::U8(k.into()), zvariant::Value::Array(v.into()));
+        for (k, v) in self.data.iter() {
+            let _ = dict.append(zvariant::Value::U8(*k), zvariant::Value::Array(v.into()));
         }
         dict
     }
-    // #[dbus_interface(property)]
     fn discoverable(&self) -> bool {
         self.discoverable
     }
-    // #[dbus_interface(property)]
     fn discoverable_timeout(&self) -> u16 {
         self.discoverable_timeout
     }
-    // #[dbus_interface(property)]
-    fn includes(&self) -> crate::ZvariantableArray<SystemInclude> {
-        self.includes.into()
+    fn includes(&self) -> &Vec<SystemInclude> {
+        &self.includes
     }
-    // #[dbus_interface(property)]
     fn local_name(&self) -> &str {
         &self.local_name
     }
-    // #[dbus_interface(property)]
     fn appearance(&self) -> BLEAppearance {
         self.appearance
     }
-    // #[dbus_interface(property)]
     fn duration(&self) -> u16 {
         self.duration
     }
-    // #[dbus_interface(property)]
     fn timeout(&self) -> u16 {
         self.timeout
     }
-    // #[dbus_interface(property)]
     fn secondary_channel(&self) -> SecondaryChannel {
         self.secondary_channel
     }
@@ -166,18 +153,18 @@ impl zbus::Interface for Advertisement {
     fn get(&self, property_name: &str) -> Option<zbus::fdo::Result<zvariant::OwnedValue>> {
         match property_name {
             "Type" => Some(Ok(zvariant::Value::from(self.advertisement_type()).into())),
-            "ServiceUUIDs" => Some(Ok(zvariant::Value::from(self.service_uuids()).into())),
+            "ServiceUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(self.service_uuids.clone())).into())),
             "ManufacturerData" => {
                 Some(Ok(zvariant::Value::from(self.manufacturer_data()).into()))
             }
-            "SolicitUUIDs" => Some(Ok(zvariant::Value::from(self.solicit_uuids()).into())),
+            "SolicitUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(self.solicit_uuids.clone())).into())),
             "ServiceData" => Some(Ok(zvariant::Value::from(self.service_data()).into())),
             "Data" => Some(Ok(zvariant::Value::from(self.data()).into())),
             "Discoverable" => Some(Ok(zvariant::Value::from(self.discoverable()).into())),
             "DiscoverableTimeout" => {
                 Some(Ok(zvariant::Value::from(self.discoverable_timeout()).into()))
             }
-            "Includes" => Some(Ok(zvariant::Value::from(self.includes()).into())),
+            "Includes" => Some(Ok(zvariant::Value::from(crate::ZvariantableArray::from(self.includes.clone())).into())),
             "LocalName" => Some(Ok(zvariant::Value::from(self.local_name()).into())),
             "Appearance" => Some(Ok(zvariant::Value::from(self.appearance()).into())),
             "Duration" => Some(Ok(zvariant::Value::from(self.duration()).into())),
@@ -197,7 +184,7 @@ impl zbus::Interface for Advertisement {
         );
         props.insert(
             "ServiceUUIDs".to_string(),
-            zvariant::Value::from(self.service_uuids()).into(),
+            zvariant::Value::from(crate::UuidArray::from(self.service_uuids.clone())).into(),
         );
         props.insert(
             "ManufacturerData".to_string(),
@@ -205,7 +192,7 @@ impl zbus::Interface for Advertisement {
         );
         props.insert(
             "SolicitUUIDs".to_string(),
-            zvariant::Value::from(self.solicit_uuids()).into(),
+            zvariant::Value::from(crate::UuidArray::from(self.solicit_uuids.clone())).into(),
         );
         props.insert(
             "ServiceData".to_string(),
@@ -225,7 +212,7 @@ impl zbus::Interface for Advertisement {
         );
         props.insert(
             "Includes".to_string(),
-            zvariant::Value::from(self.includes()).into(),
+            zvariant::Value::from(crate::ZvariantableArray::from(self.includes.clone())).into(),
         );
         props.insert(
             "LocalName".to_string(),
@@ -251,13 +238,10 @@ impl zbus::Interface for Advertisement {
     }
     fn set(
         &mut self,
-        property_name: &str,
-        value: &zvariant::Value,
+        _property_name: &str,
+        _value: &zvariant::Value,
     ) -> Option<zbus::fdo::Result<()>> {
-        //use std::convert::TryInto;
-        match property_name {
-            _ => None,
-        }
+        None
     }
     fn call(
         &self,
@@ -278,13 +262,11 @@ impl zbus::Interface for Advertisement {
     }
     fn call_mut(
         &mut self,
-        c: &zbus::Connection,
-        m: &zbus::Message,
-        name: &str,
+        _c: &zbus::Connection,
+        _m: &zbus::Message,
+        _name: &str,
     ) -> std::option::Option<zbus::Result<u32>> {
-        match name {
-            _ => None,
-        }
+        None
     }
 
     fn introspect_to_writer(&self, writer: &mut dyn std::fmt::Write, level: usize) {
@@ -292,22 +274,22 @@ impl zbus::Interface for Advertisement {
         {
             use zvariant::Type as _;
             let level = level + 2;
-            writeln!(writer, "{:indent$}<method name=\"{}\">", "", "Release", indent = level).unwrap();
-            writeln!(writer, "{:indent$}</method>", "", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Appearance", BLEAppearance::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Duration", u16::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Timeout", u16::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "SecondaryChannel", SecondaryChannel::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "ManufacturerData", self.manufacturer_data().signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "DiscoverableTimeout", u16::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "ServiceUUIDs", crate::UuidArray::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Data", self.data().signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Type", AdvertisementType::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "SolicitUUIDs", crate::UuidArray::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "ServiceData", self.service_data().signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Discoverable", bool::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "Includes", <crate::ZvariantableArray<SystemInclude>>::signature(), "read", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"{}\" type=\"{}\" access=\"{}\"/>", "", "LocalName", <&str>::signature(), "read", indent = level).unwrap();
+            writeln!(writer, "{:indent$}<method name=\"Release\">", indent = level).unwrap();
+            writeln!(writer, "{:indent$}</method>", indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Appearance\" type=\"{}\" access=\"read\"/>", BLEAppearance::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Duration\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Timeout\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"SecondaryChannel\" type=\"{}\" access=\"read\"/>", SecondaryChannel::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"ManufacturerData\" type=\"{}\" access=\"read\"/>", self.manufacturer_data().signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"DiscoverableTimeout\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"ServiceUUIDs\" type=\"{}\" access=\"read\"/>", crate::UuidArray::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Data\" type=\"{}\" access=\"read\"/>", self.data().signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Type\" type=\"{}\" access=\"read\"/>", AdvertisementType::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"SolicitUUIDs\" type=\"{}\" access=\"read\"/>", crate::UuidArray::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"ServiceData\" type=\"{}\" access=\"read\"/>", self.service_data().signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Discoverable\" type=\"{}\" access=\"read\"/>", bool::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"Includes\" type=\"{}\" access=\"read\"/>", <crate::ZvariantableArray<SystemInclude>>::signature(), indent = level).unwrap();
+            writeln!(writer, "{:indent$}<property name=\"LocalName\" type=\"{}\" access=\"read\"/>", <&str>::signature(), indent = level).unwrap();
         }
         writeln!(writer, r#"{:indent$}</interface>"#, "", indent = level).unwrap();
     }

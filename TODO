@@ -1,0 +1,38 @@
+Niter High Level APIs:
+  Host/Central Role:
+    ☐ Adapter Enumeration
+    ☐ Device Listing
+    ☐ Device Listing by Service UUIDs
+    ☐ Connection to Device
+  Peripheral Role:
+    ☐ Declare Characteristics / Descriptors
+    ☐ Declare Services
+    ☐ Register Service
+
+Bluetooth Spec:
+  ✔ Assigned RFCOMM Numbers @done (20-08-20 12:15)
+  ✔ BLE Appearance @done (20-08-20 12:15)
+  ✔ Generic Access Profile @done (20-08-20 12:15)
+
+Niter Inner APIs:
+  BlueZ APIs:
+    ✔ Adapter API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/adapter-api.txt) @critical @done (20-08-20 12:12)
+    ✔ Advertisement Monitor API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/advertisement-monitor-api.txt) @critical @done (20-08-20 12:12)
+    ✔ Advertising API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/advertising-api.txt) @critical @done (20-08-20 12:12)
+    ✔ Agent API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/agent-api.txt) @critical @done (20-08-20 12:12)
+    ✔ Device API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/device-api.txt) @critical @done (20-08-20 12:12)
+    ✔ GATT API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/gatt-api.txt) @critical @done (20-08-20 12:12)
+    ✔ Health API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/health-api.txt) @high @done (20-08-20 13:03)
+    ✔ Input API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/input-api.txt) @low @done (20-08-20 14:06)
+    ☐ Media API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/media-api.txt) @critical
+    ☐ Mesh API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/mesh-api.txt) @critical @started
+    ☐ OBEX API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-api.txt) @low
+    ☐ OBEX Agent API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-agent-api.txt) @low
+    ✔ Profile API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/profile-api.txt) @critical @done (20-08-20 12:12)
+    ✔ SAP API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/sap-api.txt) @low @done (20-08-20 14:08)
+    ✔ Thermometer API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/thermometer-api.txt) @critical @done (20-08-20 12:12)
+  Windows UWP APIs:
+    Using WinRT bindings?
+  CoreBluetooth APIs:
+    Using objc? blurmac?
+
