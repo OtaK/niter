@@ -131,6 +131,8 @@ pub struct ProvisioningAgent<T: ProvisioningAgentImpl> {
     capabilities: Vec<DisplayCapability>,
     oob_info: Vec<OutOfBandInfoAvailability>,
     uri: String,
+    service_name: String,
+    object_path: String,
     agent_impl: T,
 }
 
