@@ -26,6 +26,15 @@ Niter Inner APIs:
     ✔ Input API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/input-api.txt) @low @done (20-08-20 14:06)
     ☐ Media API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/media-api.txt) @critical
     ☐ Mesh API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/mesh-api.txt) @critical @started
+      ✔ Mesh Provisioning @done (20-08-20 18:41)
+        ✔ Mesh Provisioning Agent @done (20-08-20 18:41)
+        ✔ Mesh Provisioner @done (20-08-20 18:41)
+        ✔ Mesh Provisioning Manager @done (20-08-20 18:41)
+      ✔ Mesh Attention @done (20-08-20 18:41)
+      ✔ Mesh Element @done (20-08-20 18:41)
+      ✔ Mesh Application @done (20-08-20 18:41)
+      ☐ Mesh Node
+      ☐ Mesh Network
     ☐ OBEX API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-api.txt) @low
     ☐ OBEX Agent API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-agent-api.txt) @low
     ✔ Profile API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/profile-api.txt) @critical @done (20-08-20 12:12)
