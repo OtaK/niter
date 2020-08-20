@@ -14,7 +14,10 @@ impl<T: zvariant::Type> From<Vec<T>> for ZvariantableArray<T> {
     }
 }
 
-impl<'a, T: zvariant::Type> Into<zvariant::Structure<'a>> for ZvariantableArray<T> where T: Into<zvariant::Value<'a>> {
+impl<'a, T: zvariant::Type> Into<zvariant::Structure<'a>> for ZvariantableArray<T>
+where
+    T: Into<zvariant::Value<'a>>,
+{
     fn into(self) -> zvariant::Structure<'a> {
         let mut zstruct = zvariant::Structure::new();
         for item in self.0.into_iter() {
@@ -25,7 +28,8 @@ impl<'a, T: zvariant::Type> Into<zvariant::Structure<'a>> for ZvariantableArray<
 }
 
 impl<'a, T> std::convert::TryFrom<zvariant::OwnedValue> for crate::ZvariantableArray<T>
-where T: std::convert::TryFrom<zvariant::Value<'a>, Error = crate::NiterError> + zvariant::Type
+where
+    T: std::convert::TryFrom<zvariant::Value<'a>, Error = crate::NiterError> + zvariant::Type,
 {
     type Error = crate::NiterError;
     fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {

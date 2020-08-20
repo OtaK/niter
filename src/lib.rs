@@ -16,9 +16,9 @@ pub mod advertising;
 pub mod agent;
 pub mod device;
 pub mod gatt;
+pub mod mesh;
 pub mod profile;
 pub mod spec;
-pub mod mesh;
 
 #[macro_use]
 mod macros;

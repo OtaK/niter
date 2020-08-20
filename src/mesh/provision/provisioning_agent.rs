@@ -115,7 +115,6 @@ pub enum OutOfBandInfoAvailability {
 
 crate::impl_tryfrom_zvariant!(OutOfBandInfoAvailability);
 
-
 pub trait ProvisioningAgentDelegate: zvariant::Type {
     fn private_key(&self) -> Vec<u8>;
     fn public_key(&self) -> Vec<u8>;
@@ -133,31 +132,31 @@ pub struct ProvisioningAgent<T: ProvisioningAgentDelegate> {
     uri: String,
     service_name: String,
     object_path: String,
-    agent_impl: T,
+    delegate: T,
 }
 
 #[zbus::dbus_interface(name = "org.bluez.mesh.ProvisionAgent1")]
 impl<'a, T: ProvisioningAgentDelegate> ProvisioningAgent<T> {
     fn private_key(&self) -> Vec<u8> {
-        self.agent_impl.private_key()
+        self.delegate.private_key()
     }
     fn public_key(&self) -> Vec<u8> {
-        self.agent_impl.public_key()
+        self.delegate.public_key()
     }
     fn display_string(&self, value: String) {
-        self.agent_impl.display_string(value)
+        self.delegate.display_string(value)
     }
     fn display_numeric(&self, display_kind: DisplayNumericKind, number: u32) {
-        self.agent_impl.display_numeric(display_kind, number)
+        self.delegate.display_numeric(display_kind, number)
     }
     fn prompt_numeric(&self, display_kind: PromptNumericKind) -> u32 {
-        self.agent_impl.prompt_numeric(display_kind)
+        self.delegate.prompt_numeric(display_kind)
     }
     fn prompt_static(&self, display_kind: PromptStaticKind) -> [u8; 16] {
-        self.agent_impl.prompt_static(display_kind)
+        self.delegate.prompt_static(display_kind)
     }
     fn cancel(&mut self) {
-        self.agent_impl.cancel()
+        self.delegate.cancel()
     }
 
     #[dbus_interface(property)]

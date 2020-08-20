@@ -119,15 +119,11 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for BLEAppearance {
     fn try_from(value: zvariant::OwnedValue) -> Result<Self, Self::Error> {
         use std::convert::TryInto as _;
         let intermediate: u16 = value.try_into()?;
-        Ok(
-            intermediate
-                .try_into()
-                .map_err(anyhow::Error::from)?
-        )
+        Ok(intermediate.try_into().map_err(anyhow::Error::from)?)
     }
 }
 
- impl Into<zvariant::Structure<'_>> for BLEAppearance {
+impl Into<zvariant::Structure<'_>> for BLEAppearance {
     fn into(self) -> zvariant::Structure<'static> {
         zvariant::Structure::new().append_field(zvariant::Value::U16(self as _))
     }

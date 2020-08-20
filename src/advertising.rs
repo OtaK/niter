@@ -108,7 +108,10 @@ impl Advertisement {
         use zvariant::Type as _;
         let mut dict = zvariant::Dict::new(String::signature(), <Vec<u8>>::signature());
         for (k, v) in self.service_data.iter() {
-            let _ = dict.append(zvariant::Value::Str(k.clone().into()), zvariant::Value::Array(v.into()));
+            let _ = dict.append(
+                zvariant::Value::Str(k.clone().into()),
+                zvariant::Value::Array(v.into()),
+            );
         }
         dict
     }
@@ -153,25 +156,30 @@ impl zbus::Interface for Advertisement {
     fn get(&self, property_name: &str) -> Option<zbus::fdo::Result<zvariant::OwnedValue>> {
         match property_name {
             "Type" => Some(Ok(zvariant::Value::from(self.advertisement_type()).into())),
-            "ServiceUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(self.service_uuids.clone())).into())),
-            "ManufacturerData" => {
-                Some(Ok(zvariant::Value::from(self.manufacturer_data()).into()))
-            }
-            "SolicitUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(self.solicit_uuids.clone())).into())),
+            "ServiceUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(
+                self.service_uuids.clone(),
+            ))
+            .into())),
+            "ManufacturerData" => Some(Ok(zvariant::Value::from(self.manufacturer_data()).into())),
+            "SolicitUUIDs" => Some(Ok(zvariant::Value::from(crate::UuidArray::from(
+                self.solicit_uuids.clone(),
+            ))
+            .into())),
             "ServiceData" => Some(Ok(zvariant::Value::from(self.service_data()).into())),
             "Data" => Some(Ok(zvariant::Value::from(self.data()).into())),
             "Discoverable" => Some(Ok(zvariant::Value::from(self.discoverable()).into())),
             "DiscoverableTimeout" => {
                 Some(Ok(zvariant::Value::from(self.discoverable_timeout()).into()))
             }
-            "Includes" => Some(Ok(zvariant::Value::from(crate::ZvariantableArray::from(self.includes.clone())).into())),
+            "Includes" => Some(Ok(zvariant::Value::from(crate::ZvariantableArray::from(
+                self.includes.clone(),
+            ))
+            .into())),
             "LocalName" => Some(Ok(zvariant::Value::from(self.local_name()).into())),
             "Appearance" => Some(Ok(zvariant::Value::from(self.appearance()).into())),
             "Duration" => Some(Ok(zvariant::Value::from(self.duration()).into())),
             "Timeout" => Some(Ok(zvariant::Value::from(self.timeout()).into())),
-            "SecondaryChannel" => {
-                Some(Ok(zvariant::Value::from(self.secondary_channel()).into()))
-            }
+            "SecondaryChannel" => Some(Ok(zvariant::Value::from(self.secondary_channel()).into())),
             _ => None,
         }
     }
@@ -270,26 +278,122 @@ impl zbus::Interface for Advertisement {
     }
 
     fn introspect_to_writer(&self, writer: &mut dyn std::fmt::Write, level: usize) {
-        writeln!(writer, r#"{:indent$}<interface name="{}">"#, "", Self::name(), indent = level).unwrap();
+        writeln!(
+            writer,
+            r#"{:indent$}<interface name="{}">"#,
+            "",
+            Self::name(),
+            indent = level
+        )
+        .unwrap();
         {
             use zvariant::Type as _;
             let level = level + 2;
-            writeln!(writer, "{:indent$}<method name=\"Release\">", indent = level).unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<method name=\"Release\">",
+                indent = level
+            )
+            .unwrap();
             writeln!(writer, "{:indent$}</method>", indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Appearance\" type=\"{}\" access=\"read\"/>", BLEAppearance::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Duration\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Timeout\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"SecondaryChannel\" type=\"{}\" access=\"read\"/>", SecondaryChannel::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"ManufacturerData\" type=\"{}\" access=\"read\"/>", self.manufacturer_data().signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"DiscoverableTimeout\" type=\"{}\" access=\"read\"/>", u16::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"ServiceUUIDs\" type=\"{}\" access=\"read\"/>", crate::UuidArray::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Data\" type=\"{}\" access=\"read\"/>", self.data().signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Type\" type=\"{}\" access=\"read\"/>", AdvertisementType::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"SolicitUUIDs\" type=\"{}\" access=\"read\"/>", crate::UuidArray::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"ServiceData\" type=\"{}\" access=\"read\"/>", self.service_data().signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Discoverable\" type=\"{}\" access=\"read\"/>", bool::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"Includes\" type=\"{}\" access=\"read\"/>", <crate::ZvariantableArray<SystemInclude>>::signature(), indent = level).unwrap();
-            writeln!(writer, "{:indent$}<property name=\"LocalName\" type=\"{}\" access=\"read\"/>", <&str>::signature(), indent = level).unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Appearance\" type=\"{}\" access=\"read\"/>",
+                BLEAppearance::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Duration\" type=\"{}\" access=\"read\"/>",
+                u16::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Timeout\" type=\"{}\" access=\"read\"/>",
+                u16::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"SecondaryChannel\" type=\"{}\" access=\"read\"/>",
+                SecondaryChannel::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"ManufacturerData\" type=\"{}\" access=\"read\"/>",
+                self.manufacturer_data().signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"DiscoverableTimeout\" type=\"{}\" access=\"read\"/>",
+                u16::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"ServiceUUIDs\" type=\"{}\" access=\"read\"/>",
+                crate::UuidArray::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Data\" type=\"{}\" access=\"read\"/>",
+                self.data().signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Type\" type=\"{}\" access=\"read\"/>",
+                AdvertisementType::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"SolicitUUIDs\" type=\"{}\" access=\"read\"/>",
+                crate::UuidArray::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"ServiceData\" type=\"{}\" access=\"read\"/>",
+                self.service_data().signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Discoverable\" type=\"{}\" access=\"read\"/>",
+                bool::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"Includes\" type=\"{}\" access=\"read\"/>",
+                <crate::ZvariantableArray<SystemInclude>>::signature(),
+                indent = level
+            )
+            .unwrap();
+            writeln!(
+                writer,
+                "{:indent$}<property name=\"LocalName\" type=\"{}\" access=\"read\"/>",
+                <&str>::signature(),
+                indent = level
+            )
+            .unwrap();
         }
         writeln!(writer, r#"{:indent$}</interface>"#, "", indent = level).unwrap();
     }

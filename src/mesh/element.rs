@@ -1,12 +1,7 @@
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum MeshMessageDestination {
     Unicast(u16),
-    VirtualLabel(Vec<u8>)
+    VirtualLabel(Vec<u8>),
 }
 
 impl zvariant::Type for MeshMessageDestination {
@@ -61,9 +56,25 @@ impl<'a> Into<zvariant::Value<'a>> for ModelConfiguration {
 }
 
 pub trait MeshElementDelegate: zvariant::Type {
-    fn message_received(&mut self, source: u16, key_index: u16, destination: MeshMessageDestination, data: Vec<u8>);
-    fn dev_key_message_received(&mut self, source: u16, remote: bool, net_index: u16, data: Vec<u8>);
-    fn update_model_configuration(&mut self, model_id: u16, config: std::collections::HashMap<String, zvariant::Value<'_>>);
+    fn message_received(
+        &mut self,
+        source: u16,
+        key_index: u16,
+        destination: MeshMessageDestination,
+        data: Vec<u8>,
+    );
+    fn dev_key_message_received(
+        &mut self,
+        source: u16,
+        remote: bool,
+        net_index: u16,
+        data: Vec<u8>,
+    );
+    fn update_model_configuration(
+        &mut self,
+        model_id: u16,
+        config: std::collections::HashMap<String, zvariant::Value<'_>>,
+    );
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
@@ -79,13 +90,31 @@ pub struct MeshElement<T: MeshElementDelegate> {
 
 #[zbus::dbus_interface(name = "org.bluez.mesh.Element1")]
 impl<T: MeshElementDelegate> MeshElement<T> {
-    fn message_received(&mut self, source: u16, key_index: u16, destination: MeshMessageDestination, data: Vec<u8>) {
-        self.delegate.message_received(source, key_index, destination, data)
+    fn message_received(
+        &mut self,
+        source: u16,
+        key_index: u16,
+        destination: MeshMessageDestination,
+        data: Vec<u8>,
+    ) {
+        self.delegate
+            .message_received(source, key_index, destination, data)
     }
-    fn dev_key_message_received(&mut self, source: u16, remote: bool, net_index: u16, data: Vec<u8>) {
-        self.delegate.dev_key_message_received(source, remote, net_index, data)
+    fn dev_key_message_received(
+        &mut self,
+        source: u16,
+        remote: bool,
+        net_index: u16,
+        data: Vec<u8>,
+    ) {
+        self.delegate
+            .dev_key_message_received(source, remote, net_index, data)
     }
-    fn update_model_configuration(&mut self, model_id: u16, config: std::collections::HashMap<String, zvariant::Value<'_>>) {
+    fn update_model_configuration(
+        &mut self,
+        model_id: u16,
+        config: std::collections::HashMap<String, zvariant::Value<'_>>,
+    ) {
         self.delegate.update_model_configuration(model_id, config)
     }
 
