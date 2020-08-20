@@ -1,4 +1,3 @@
-
 #[derive(
     Debug,
     Clone,
@@ -23,8 +22,7 @@ pub enum ProvisionerAddNodeFailedReason {
 
 crate::impl_tryfrom_zvariant!(ProvisionerAddNodeFailedReason);
 
-
-pub trait ProvisionerImpl: zvariant::Type {
+pub trait ProvisionerDelegate: zvariant::Type {
     fn scan_result(&self, rssi: i16, data: Vec<u8>, options: std::collections::HashMap<String, String>);
     fn request_prov_data(&self, count: u8) -> (u16, u16);
     fn add_node_complete(&self, uuid: crate::Uuid, unicast: u16, count: u8);
@@ -32,14 +30,14 @@ pub trait ProvisionerImpl: zvariant::Type {
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct Provisioner<T: ProvisionerImpl> {
+pub struct Provisioner<T: ProvisionerDelegate> {
     service_name: String,
     object_path: String,
     provisioner_impl: T,
 }
 
 #[zbus::dbus_interface(name = "org.bluez.mesh.Provisioner1")]
-impl<T: ProvisionerImpl> Provisioner<T> {
+impl<T: ProvisionerDelegate> Provisioner<T> {
     fn scan_result(&self, rssi: i16, data: Vec<u8>, options: std::collections::HashMap<String, String>) {
         self.provisioner_impl.scan_result(rssi, data, options)
     }

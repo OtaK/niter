@@ -116,7 +116,7 @@ pub enum OutOfBandInfoAvailability {
 crate::impl_tryfrom_zvariant!(OutOfBandInfoAvailability);
 
 
-pub trait ProvisioningAgentImpl: zvariant::Type {
+pub trait ProvisioningAgentDelegate: zvariant::Type {
     fn private_key(&self) -> Vec<u8>;
     fn public_key(&self) -> Vec<u8>;
     fn display_string(&self, value: String);
@@ -127,7 +127,7 @@ pub trait ProvisioningAgentImpl: zvariant::Type {
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct ProvisioningAgent<T: ProvisioningAgentImpl> {
+pub struct ProvisioningAgent<T: ProvisioningAgentDelegate> {
     capabilities: Vec<DisplayCapability>,
     oob_info: Vec<OutOfBandInfoAvailability>,
     uri: String,
@@ -137,7 +137,7 @@ pub struct ProvisioningAgent<T: ProvisioningAgentImpl> {
 }
 
 #[zbus::dbus_interface(name = "org.bluez.mesh.ProvisionAgent1")]
-impl<'a, T: ProvisioningAgentImpl> ProvisioningAgent<T> {
+impl<'a, T: ProvisioningAgentDelegate> ProvisioningAgent<T> {
     fn private_key(&self) -> Vec<u8> {
         self.agent_impl.private_key()
     }

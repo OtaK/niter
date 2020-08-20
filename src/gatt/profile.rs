@@ -1,15 +1,15 @@
-pub trait GattProfileImpl: zvariant::Type {
+pub trait GattProfileDelegate: zvariant::Type {
     fn release(&mut self);
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct GattProfile<T: GattProfileImpl> {
+pub struct GattProfile<T: GattProfileDelegate> {
     uuids: crate::UuidArray,
     profile_impl: T,
 }
 
 #[zbus::dbus_interface(name = "org.bluez.GattProfile1")]
-impl<T: GattProfileImpl> GattProfile<T> {
+impl<T: GattProfileDelegate> GattProfile<T> {
     fn release(&mut self) -> zbus::fdo::Result<()> {
         // Letting the profile impl know that cleanup has started and do its thing
         self.profile_impl.release();
