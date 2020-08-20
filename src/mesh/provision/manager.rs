@@ -1,9 +1,16 @@
 #[derive(Debug, Clone, Copy, zvariant_derive::Type, serde::Deserialize, serde::Serialize)]
 pub struct UnprovisionedScanOptions {
-    seconds: u16
+    seconds: u16,
 }
 
-#[derive(Debug, Clone, Copy, zvariant_derive::Type, serde_repr::Deserialize_repr, serde_repr::Serialize_repr)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    zvariant_derive::Type,
+    serde_repr::Deserialize_repr,
+    serde_repr::Serialize_repr,
+)]
 #[repr(u8)]
 pub enum KeyPhase {
     CancelKeyRefresh = 0,
@@ -27,9 +34,19 @@ pub trait MeshProvisioningManager {
     fn delete_subnet(&self, net_index: u16) -> zbus::Result<()>;
     fn set_key_phase(&self, index: u16, phase: KeyPhase) -> zbus::Result<()>;
     fn create_app_key(&self, net_index: u16, app_index: u16) -> zbus::Result<()>;
-    fn import_app_key(&self, net_index: u16, app_index: u16, app_key: &[u8; 16]) -> zbus::Result<()>;
+    fn import_app_key(
+        &self,
+        net_index: u16,
+        app_index: u16,
+        app_key: &[u8; 16],
+    ) -> zbus::Result<()>;
     fn update_app_key(&self, app_index: u16) -> zbus::Result<()>;
     fn delete_app_key(&self, app_index: u16) -> zbus::Result<()>;
-    fn import_remote_node(&self, primary: u16, count: u8, device_key: &[u8; 16]) -> zbus::Result<()>;
+    fn import_remote_node(
+        &self,
+        primary: u16,
+        count: u8,
+        device_key: &[u8; 16],
+    ) -> zbus::Result<()>;
     fn delete_remote_node(&self, primary: u16, count: u8) -> zbus::Result<()>;
 }
