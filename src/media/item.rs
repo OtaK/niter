@@ -28,6 +28,31 @@ crate::impl_enumto_zstruct!(MediaItemType);
     serde::Deserialize,
     zvariant_derive::Type,
 )]
+
+#[strum(serialize_all = "kebab-case")]
+pub enum MediaItemAttibute {
+    Title,
+    Artist,
+    Album,
+    Genre,
+    NumberOfTracks,
+    Number,
+    Duration
+}
+
+crate::impl_tryfrom_zvariant!(MediaItemAttibute);
+crate::impl_enumto_zstruct!(MediaItemAttibute);
+
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    strum::Display,
+    strum::EnumString,
+    serde::Serialize,
+    serde::Deserialize,
+    zvariant_derive::Type,
+)]
 #[strum(serialize_all = "lowercase")]
 pub enum MediaFolderType {
     Mixed,

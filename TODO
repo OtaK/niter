@@ -32,9 +32,9 @@ Niter Inner APIs:
       ✔ Media Item @done (20-08-21 17:43)
         ✔ Media Item Target Interface @done (20-08-21 17:43)
         ✔ Media Item Controller Proxy @done (20-08-21 17:43)
-      ☐ Media Folder
-        ☐ Media Folder Target Interface
-        ☐ Media Folder Controller Proxy
+      ✔ Media Folder @done (20-08-21 18:17)
+        ✔ Media Folder Target Interface @done (20-08-21 18:17)
+        ✔ Media Folder Controller Proxy @done (20-08-21 18:17)
       ☐ Media Player Controller Proxy
       ☐ Media Control
       ☐ Media
