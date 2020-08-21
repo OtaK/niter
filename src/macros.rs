@@ -44,7 +44,8 @@ macro_rules! impl_enumto_zstruct {
     ($thing: ident) => {
         impl Into<zvariant::Structure<'_>> for $thing {
             fn into(self) -> zvariant::Structure<'static> {
-                let s = ::std::format!("{}", self);
+                use std::string::ToString as _;
+                let s = self.to_string();
                 zvariant::Structure::new().append_field(zvariant::Value::Str(s.into()))
             }
         }
