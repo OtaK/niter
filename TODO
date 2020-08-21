@@ -38,7 +38,7 @@ Niter Inner APIs:
       ☐ Media Player Controller Proxy
       ☐ Media Control
       ☐ Media
-    ☐ Mesh API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/mesh-api.txt) @critical @started
+    ✔ Mesh API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/mesh-api.txt) @critical @started @done (20-08-21 11:38)
       ✔ Mesh Provisioning @done (20-08-20 18:41)
         ✔ Mesh Provisioning Agent @done (20-08-20 18:41)
         ✔ Mesh Provisioner @done (20-08-20 18:41)
@@ -46,8 +46,8 @@ Niter Inner APIs:
       ✔ Mesh Attention @done (20-08-20 18:41)
       ✔ Mesh Element @done (20-08-20 18:41)
       ✔ Mesh Application @done (20-08-20 18:41)
-      ☐ Mesh Node
-      ☐ Mesh Network
+      ✔ Mesh Node @done (20-08-21 10:50)
+      ✔ Mesh Network @done (20-08-21 11:38)
     ☐ OBEX API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-api.txt) @low
       ☐ OBEX Message
       ☐ OBEX Message Access
@@ -58,9 +58,9 @@ Niter Inner APIs:
       ☐ OBEX Transfer
       ☐ OBEX Session
       ☐ OBEX Client
-    ☐ OBEX Agent API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-agent-api.txt) @low
-      ☐ OBEX Agent
-      ☐ OBEX Agent Manager
+    ✔ OBEX Agent API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/obex-agent-api.txt) @low @done (20-08-21 11:45)
+      ✔ OBEX Agent @done (20-08-21 11:45)
+      ✔ OBEX Agent Manager @done (20-08-21 11:45)
     ✔ Profile API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/profile-api.txt) @critical @done (20-08-20 12:12)
     ✔ SAP API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/sap-api.txt) @low @done (20-08-20 14:08)
     ✔ Thermometer API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/thermometer-api.txt) @critical @done (20-08-20 12:12)

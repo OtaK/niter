@@ -21,7 +21,7 @@ pub enum MeshApplicationJoinFailureReason {
 
 crate::impl_tryfrom_zvariant!(MeshApplicationJoinFailureReason);
 
-pub trait MeshApplicationDelegate: zvariant::Type {
+pub trait MeshApplicationDelegate: zvariant::Type + serde::Serialize {
     fn join_complete(&mut self, token: u64);
     fn join_failed(&mut self, reason: MeshApplicationJoinFailureReason);
 }

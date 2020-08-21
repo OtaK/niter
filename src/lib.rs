@@ -11,12 +11,15 @@ mod misc;
 pub use self::misc::*;
 
 pub mod adapter;
+#[cfg(feature = "bluez-next")]
 pub mod advertisement_monitor;
 pub mod advertising;
 pub mod agent;
 pub mod device;
 pub mod gatt;
+pub mod media;
 pub mod mesh;
+pub mod obex;
 pub mod profile;
 pub mod spec;
 
@@ -42,6 +45,7 @@ pub enum AddressType {
 crate::impl_tryfrom_zvariant!(AddressType);
 
 #[derive(Debug, Clone, Copy, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+/// Forward Compat BlueZ Dummy struct
 pub struct BlueZDummy;
 
 pub type ServiceData = ZvariantableMap<String, Vec<u8>>;

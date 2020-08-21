@@ -18,6 +18,10 @@ include = [
     "Cargo.toml"
 ]
 
+[features]
+default = []
+bluez-next = []
+
 [dependencies]
 zbus = "1.0"
 zvariant_derive = "2.0"

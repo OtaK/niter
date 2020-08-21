@@ -69,6 +69,14 @@ impl std::ops::Deref for Uuid {
     }
 }
 
+pub type RawUuid = [u8; 16];
+
+impl Into<RawUuid> for Uuid {
+    fn into(self) -> RawUuid {
+        *self.0.as_bytes()
+    }
+}
+
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct UuidArray(Vec<Uuid>);
 
