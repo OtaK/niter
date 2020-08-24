@@ -133,7 +133,7 @@ crate::impl_tryfrom_zvariant!(AdapterRole);
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, zvariant_derive::Type)]
 pub struct Adapter {
-    object_path: String,
+    pub(crate) object_path: String,
 }
 
 impl<'a> From<std::borrow::Cow<'a, String>> for Adapter {

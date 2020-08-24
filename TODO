@@ -1,8 +1,8 @@
 Niter High Level APIs:
   Host/Central Role:
-    ☐ Adapter Enumeration
-    ☐ Device Listing
-    ☐ Device Listing by Service UUIDs
+    ✔ Adapter Enumeration @done (20-08-24 13:33)
+    ✔ Device Listing @done (20-08-24 13:33)
+    ✔ Device Listing by Service UUIDs @done (20-08-24 13:33)
     ☐ Connection to Device
   Peripheral Role:
     ☐ Declare Characteristics / Descriptors

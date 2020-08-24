@@ -45,3 +45,4 @@ pub struct BlueZDummy;
 pub type ServiceData = ZvariantableMap<String, Vec<u8>>;
 pub type ManufacturerData = ZvariantableMap<u16, Vec<u8>>;
 pub type AdvertisingData = ZvariantableMap<u8, Vec<u8>>;
+

@@ -5,6 +5,12 @@ pub struct Device {
     object_path: String,
 }
 
+impl From<String> for Device {
+    fn from(object_path: String) -> Self {
+        Self { object_path }
+    }
+}
+
 impl std::str::FromStr for Device {
     type Err = crate::NiterError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -76,4 +82,35 @@ pub trait Device {
     fn advertising_flags(&self) -> zbus::fdo::Result<Vec<u8>>;
     #[dbus_proxy(property)]
     fn advertising_data(&self) -> zbus::fdo::Result<bluez::AdvertisingData>;
+}
+
+#[derive(Debug)]
+pub struct DeviceEnumerator<'a> {
+    paths: Vec<String>,
+    connection: &'a zbus::Connection,
+}
+
+impl std::iter::Iterator for DeviceEnumerator<'_> {
+    type Item = Device;
+    fn next(&mut self) -> std::option::Option<Self::Item> {
+        self.paths.pop().map(Into::into)
+    }
+}
+
+impl<'a> DeviceProxy<'a> {
+    pub fn enumerate_devices(
+        connection: &'a zbus::Connection,
+    ) -> crate::NiterResult<DeviceEnumerator<'a>> {
+        let object_manager = zbus::fdo::ObjectManagerProxy::new_for(connection, "org.bluez", "/")?;
+        let managed_objects = object_manager.get_managed_objects()?;
+        let mut paths: Vec<String> = managed_objects
+            .into_iter()
+            .filter(|(_, contents)| contents.contains_key("org.bluez.Device1"))
+            .map(|(path, _)| path.into())
+            .collect();
+
+        paths.reverse();
+
+        Ok(DeviceEnumerator { connection, paths })
+    }
 }
