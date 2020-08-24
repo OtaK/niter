@@ -1,3 +1,4 @@
+use crate::sys::bluez;
 use crate::error::*;
 
 #[repr(u8)]
@@ -159,8 +160,8 @@ impl Adapter {
     pub fn advertising_manager<'a>(
         &'a self,
         connection: &'a zbus::Connection,
-    ) -> NiterResult<crate::advertising::AdvertisingManagerProxy<'a>> {
-        Ok(crate::advertising::AdvertisingManagerProxy::new_for(
+    ) -> NiterResult<bluez::advertising::AdvertisingManagerProxy<'a>> {
+        Ok(bluez::advertising::AdvertisingManagerProxy::new_for(
             connection,
             "org.bluez",
             &self.object_path,
@@ -177,7 +178,7 @@ impl Adapter {
 pub trait Adapter {
     fn start_discovery(&self) -> zbus::Result<()>;
     fn stop_discovery(&self) -> zbus::Result<()>;
-    fn remove_device(&self, device: crate::device::Device) -> zbus::Result<()>;
+    fn remove_device(&self, device: bluez::device::Device) -> zbus::Result<()>;
     fn set_discovery_filter(&self, filter: zvariant::Value) -> zbus::Result<()>;
     fn get_discovery_filters(&self) -> zbus::Result<Vec<String>>;
     fn connect_device(&self, device: zvariant::Value) -> zbus::Result<()>;
@@ -185,7 +186,7 @@ pub trait Adapter {
     #[dbus_proxy(property)]
     fn address(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    fn address_type(&self) -> zbus::fdo::Result<crate::AddressType>;
+    fn address_type(&self) -> zbus::fdo::Result<bluez::AddressType>;
     #[dbus_proxy(property)]
     fn name(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
@@ -221,7 +222,7 @@ pub trait Adapter {
     #[dbus_proxy(property)]
     fn modalias(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    fn roles(&self) -> zbus::fdo::Result<crate::ZvariantableArray<AdapterRole>>;
+    fn roles(&self) -> zbus::fdo::Result<bluez::ZvariantableArray<AdapterRole>>;
 }
 
 impl<'a> std::ops::Deref for AdapterProxy<'a> {

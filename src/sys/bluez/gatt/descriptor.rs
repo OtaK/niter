@@ -1,14 +1,14 @@
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattDescriptorReadOptions {
     offset: u16,
-    device: crate::device::Device,
+    device: crate::sys::bluez::device::Device,
     link: super::GattLinkType,
 }
 
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattDescriptorWriteOptions {
     offset: u16,
-    device: crate::device::Device,
+    device: crate::sys::bluez::device::Device,
     link: super::GattLinkType,
     prepare_authorize: bool,
 }
@@ -51,7 +51,7 @@ pub trait GattDescriptor {
     #[dbus_proxy(property)]
     fn value(&self) -> zbus::fdo::Result<Vec<u8>>;
     #[dbus_proxy(property)]
-    fn flags(&self) -> zbus::fdo::Result<crate::ZvariantableArray<GattDescriptorFlags>>;
+    fn flags(&self) -> zbus::fdo::Result<crate::sys::bluez::ZvariantableArray<GattDescriptorFlags>>;
     #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }

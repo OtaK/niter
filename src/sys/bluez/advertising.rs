@@ -1,4 +1,5 @@
-use crate::spec::ble_appearance::BLEAppearance;
+use crate::sys::bluez;
+use bluez::spec::ble_appearance::BLEAppearance;
 
 #[derive(
     Debug,
@@ -66,10 +67,10 @@ pub struct Advertisement {
     object_path: String,
     r#type: AdvertisementType,
     service_uuids: Vec<crate::Uuid>,
-    manufacturer_data: crate::ManufacturerData,
+    manufacturer_data: bluez::ManufacturerData,
     solicit_uuids: Vec<crate::Uuid>,
-    service_data: crate::ServiceData,
-    data: crate::AdvertisingData,
+    service_data: bluez::ServiceData,
+    data: bluez::AdvertisingData,
     discoverable: bool,
     discoverable_timeout: u16,
     includes: Vec<SystemInclude>,
@@ -171,7 +172,7 @@ impl zbus::Interface for Advertisement {
             "DiscoverableTimeout" => {
                 Some(Ok(zvariant::Value::from(self.discoverable_timeout()).into()))
             }
-            "Includes" => Some(Ok(zvariant::Value::from(crate::ZvariantableArray::from(
+            "Includes" => Some(Ok(zvariant::Value::from(bluez::ZvariantableArray::from(
                 self.includes.clone(),
             ))
             .into())),
@@ -220,7 +221,7 @@ impl zbus::Interface for Advertisement {
         );
         props.insert(
             "Includes".to_string(),
-            zvariant::Value::from(crate::ZvariantableArray::from(self.includes.clone())).into(),
+            zvariant::Value::from(bluez::ZvariantableArray::from(self.includes.clone())).into(),
         );
         props.insert(
             "LocalName".to_string(),
@@ -383,7 +384,7 @@ impl zbus::Interface for Advertisement {
             writeln!(
                 writer,
                 "{:indent$}<property name=\"Includes\" type=\"{}\" access=\"read\"/>",
-                <crate::ZvariantableArray<SystemInclude>>::signature(),
+                <bluez::ZvariantableArray<SystemInclude>>::signature(),
                 indent = level
             )
             .unwrap();
@@ -423,9 +424,9 @@ pub trait AdvertisingManager {
     #[dbus_proxy(property)]
     fn supported_instances(&self) -> zbus::fdo::Result<u8>;
     #[dbus_proxy(property)]
-    fn supported_includes(&self) -> zbus::fdo::Result<crate::ZvariantableArray<SystemInclude>>;
+    fn supported_includes(&self) -> zbus::fdo::Result<bluez::ZvariantableArray<SystemInclude>>;
     #[dbus_proxy(property)]
     fn supported_secondary_channels(
         &self,
-    ) -> zbus::fdo::Result<crate::ZvariantableArray<SecondaryChannel>>;
+    ) -> zbus::fdo::Result<bluez::ZvariantableArray<SecondaryChannel>>;
 }

@@ -6,11 +6,11 @@ pub trait GattService {
     #[dbus_proxy(property)]
     fn primary(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
-    fn device(&self) -> zbus::fdo::Result<crate::device::Device>;
+    fn device(&self) -> zbus::fdo::Result<crate::sys::bluez::device::Device>;
     #[dbus_proxy(property)]
     fn includes(
         &self,
-    ) -> zbus::fdo::Result<crate::ZvariantableArray<crate::advertising::SystemInclude>>;
+    ) -> zbus::fdo::Result<crate::sys::bluez::ZvariantableArray<crate::sys::bluez::advertising::SystemInclude>>;
     #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }

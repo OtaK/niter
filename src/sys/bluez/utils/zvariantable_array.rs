@@ -27,7 +27,7 @@ where
     }
 }
 
-impl<'a, T> std::convert::TryFrom<zvariant::OwnedValue> for crate::ZvariantableArray<T>
+impl<'a, T> std::convert::TryFrom<zvariant::OwnedValue> for ZvariantableArray<T>
 where
     T: std::convert::TryFrom<zvariant::Value<'a>, Error = crate::NiterError> + zvariant::Type,
 {

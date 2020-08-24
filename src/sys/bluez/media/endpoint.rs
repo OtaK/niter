@@ -1,4 +1,4 @@
-use crate::media::transport::{MediaTransport, MediaTransportConfiguration};
+use crate::sys::bluez::media::transport::{MediaTransport, MediaTransportConfiguration};
 
 pub type MediaEndpointCapabilities = Vec<u8>;
 
@@ -79,5 +79,5 @@ pub trait MediaEndpointClient {
     #[dbus_proxy(property)]
     fn capabilities(&self) -> zbus::fdo::Result<MediaEndpointCapabilities>;
     #[dbus_proxy(property)]
-    fn device(&self) -> zbus::fdo::Result<crate::device::Device>;
+    fn device(&self) -> zbus::fdo::Result<crate::sys::bluez::device::Device>;
 }

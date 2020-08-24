@@ -1,6 +1,7 @@
 #![allow(clippy::too_many_arguments)]
+use crate::sys::bluez;
 
-use crate::mesh::{
+use bluez::mesh::{
     application::{MeshApplication, MeshApplicationDelegate},
     element::ModelConfiguration,
     node::MeshNode,

@@ -1,3 +1,5 @@
+use crate::sys::bluez;
+
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct Device {
     object_path: String,
@@ -31,7 +33,7 @@ pub trait Device {
     #[dbus_proxy(property)]
     fn address(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    fn address_type(&self) -> zbus::fdo::Result<crate::AddressType>;
+    fn address_type(&self) -> zbus::fdo::Result<bluez::AddressType>;
     #[dbus_proxy(property)]
     fn name(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
@@ -39,7 +41,7 @@ pub trait Device {
     #[dbus_proxy(property)]
     fn class(&self) -> zbus::fdo::Result<u32>;
     #[dbus_proxy(property)]
-    fn appearance(&self) -> zbus::fdo::Result<crate::spec::ble_appearance::BLEAppearance>;
+    fn appearance(&self) -> zbus::fdo::Result<bluez::spec::ble_appearance::BLEAppearance>;
     #[dbus_proxy(property)]
     fn uuids(&self) -> zbus::fdo::Result<crate::UuidArray>;
     #[dbus_proxy(property)]
@@ -55,7 +57,7 @@ pub trait Device {
     #[dbus_proxy(property)]
     fn alias(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property)]
-    fn adapter(&self) -> zbus::fdo::Result<crate::adapter::Adapter>;
+    fn adapter(&self) -> zbus::fdo::Result<bluez::adapter::Adapter>;
     #[dbus_proxy(property)]
     fn legacy_pairing(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
@@ -65,13 +67,13 @@ pub trait Device {
     #[dbus_proxy(property)]
     fn tx_power(&self) -> zbus::fdo::Result<u16>;
     #[dbus_proxy(property)]
-    fn manufacturer_data(&self) -> zbus::fdo::Result<crate::ManufacturerData>;
+    fn manufacturer_data(&self) -> zbus::fdo::Result<bluez::ManufacturerData>;
     #[dbus_proxy(property)]
-    fn service_data(&self) -> zbus::fdo::Result<crate::ServiceData>;
+    fn service_data(&self) -> zbus::fdo::Result<bluez::ServiceData>;
     #[dbus_proxy(property)]
     fn services_resolved(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
     fn advertising_flags(&self) -> zbus::fdo::Result<Vec<u8>>;
     #[dbus_proxy(property)]
-    fn advertising_data(&self) -> zbus::fdo::Result<crate::AdvertisingData>;
+    fn advertising_data(&self) -> zbus::fdo::Result<bluez::AdvertisingData>;
 }

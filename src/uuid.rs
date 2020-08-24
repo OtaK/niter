@@ -86,6 +86,7 @@ impl From<Vec<Uuid>> for UuidArray {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl<'a> From<zvariant::Array<'a>> for UuidArray {
     fn from(v: zvariant::Array<'a>) -> Self {
         use std::convert::TryInto as _;
@@ -100,6 +101,7 @@ impl<'a> From<zvariant::Array<'a>> for UuidArray {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl From<zvariant::OwnedValue> for UuidArray {
     fn from(v: zvariant::OwnedValue) -> Self {
         use std::convert::TryInto as _;
@@ -111,6 +113,7 @@ impl From<zvariant::OwnedValue> for UuidArray {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl<'a> Into<zvariant::Structure<'a>> for UuidArray {
     fn into(self) -> zvariant::Structure<'a> {
         let mut ret = zvariant::Structure::new();

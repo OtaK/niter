@@ -2,7 +2,7 @@
 pub struct GattCharacteristicReadOptions {
     offset: u16,
     mtu: u16,
-    device: crate::device::Device,
+    device: crate::sys::bluez::device::Device,
 }
 
 #[derive(
@@ -29,7 +29,7 @@ pub struct GattCharacteristicWriteOptions {
     offset: u16,
     r#type: GattWriteType,
     mtu: u16,
-    device: crate::device::Device,
+    device: crate::sys::bluez::device::Device,
     link: super::GattLinkType,
     prepare_authorize: bool,
 }
@@ -37,7 +37,7 @@ pub struct GattCharacteristicWriteOptions {
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub struct GattCharacteristicAcquireOptions {
     mtu: u16,
-    device: crate::device::Device,
+    device: crate::sys::bluez::device::Device,
     link: super::GattLinkType,
 }
 
@@ -111,7 +111,7 @@ pub trait GattCharacteristic {
     #[dbus_proxy(property)]
     fn notifying(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
-    fn flags(&self) -> zbus::fdo::Result<crate::ZvariantableArray<GattCharacteristicFlags>>;
+    fn flags(&self) -> zbus::fdo::Result<crate::sys::bluez::ZvariantableArray<GattCharacteristicFlags>>;
     #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }

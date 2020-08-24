@@ -1,3 +1,5 @@
+use crate::sys::bluez;
+
 #[derive(Debug, Clone, Copy, zvariant_derive::Type, serde::Deserialize, serde::Serialize)]
 pub struct UnprovisionedScanOptions {
     seconds: u16,
@@ -27,7 +29,7 @@ pub enum KeyPhase {
 pub trait MeshProvisioningManager {
     fn unprovisioned_scan(&self, options: UnprovisionedScanOptions) -> zbus::Result<()>;
     fn unprovisioned_scan_cancel(&self) -> zbus::Result<()>;
-    fn add_node(&self, uuid: crate::Uuid, options: crate::BlueZDummy) -> zbus::Result<()>;
+    fn add_node(&self, uuid: crate::Uuid, options: bluez::BlueZDummy) -> zbus::Result<()>;
     fn create_subnet(&self, net_index: u16) -> zbus::Result<()>;
     fn import_subnet(&self, net_index: u16, net_key: &[u8; 16]) -> zbus::Result<()>;
     fn update_subnet(&self, net_index: u16) -> zbus::Result<()>;

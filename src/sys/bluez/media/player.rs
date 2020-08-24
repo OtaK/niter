@@ -176,7 +176,7 @@ pub trait MediaPlayer {
     #[dbus_proxy(property)]
     fn track(&self) -> zbus::fdo::Result<super::item::MediaItemMetadata>;
     #[dbus_proxy(property)]
-    fn device(&self) -> zbus::fdo::Result<crate::device::Device>;
+    fn device(&self) -> zbus::fdo::Result<crate::sys::bluez::device::Device>;
     #[dbus_proxy(property)]
     fn name(&self) -> zbus::fdo::Result<String>;
     #[dbus_proxy(property, name = "Type")]

@@ -1,5 +1,6 @@
-use crate::device::Device;
-use crate::spec::assigned_numbers::AssignedRfcommNumber;
+use crate::sys::bluez;
+use bluez::device::Device;
+use bluez::spec::assigned_numbers::AssignedRfcommNumber;
 
 #[derive(
     Debug,
