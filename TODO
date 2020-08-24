@@ -24,7 +24,7 @@ Niter Inner APIs:
     ✔ GATT API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/gatt-api.txt) @critical @done (20-08-20 12:12)
     ✔ Health API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/health-api.txt) @high @done (20-08-20 13:03)
     ✔ Input API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/input-api.txt) @low @done (20-08-20 14:06)
-    ☐ Media API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/media-api.txt) @critical
+    ✔ Media API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/media-api.txt) @critical @done (20-08-24 11:36)
       ✔ Media Transport @done (20-08-21 17:01)
       ✔ Media Endpoint @done (20-08-21 17:01)
         ✔ Media Endpoint Client Proxy @done (20-08-21 17:01)
@@ -35,9 +35,9 @@ Niter Inner APIs:
       ✔ Media Folder @done (20-08-21 18:17)
         ✔ Media Folder Target Interface @done (20-08-21 18:17)
         ✔ Media Folder Controller Proxy @done (20-08-21 18:17)
-      ☐ Media Player Controller Proxy
-      ☐ Media Control
-      ☐ Media
+      ✔ Media Player Controller Proxy @done (20-08-24 11:22)
+      ✔ Media Control @done (20-08-24 11:36)
+      ✔ Media @done (20-08-24 11:36)
     ✔ Mesh API (https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/mesh-api.txt) @critical @started @done (20-08-21 11:38)
       ✔ Mesh Provisioning @done (20-08-20 18:41)
         ✔ Mesh Provisioning Agent @done (20-08-20 18:41)
