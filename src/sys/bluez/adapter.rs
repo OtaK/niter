@@ -225,13 +225,6 @@ pub trait Adapter {
     fn roles(&self) -> zbus::fdo::Result<bluez::ZvariantableArray<AdapterRole>>;
 }
 
-impl<'a> std::ops::Deref for AdapterProxy<'a> {
-    type Target = zbus::Proxy<'a>;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
 #[derive(Debug)]
 pub struct AdapterEnumerator<'a> {
     paths: Vec<std::borrow::Cow<'a, String>>,

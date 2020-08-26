@@ -1,17 +1,20 @@
 mod descriptor;
 pub use self::descriptor::*;
 
-pub(crate) trait PlatformPeripheral: std::fmt::Debug {
-    type Service;
-    type Characteristic;
-    type Descriptor;
+mod characteristic;
+pub use self::characteristic::*;
 
-    fn address(&self) -> String;
-    fn is_connected(&self) -> bool;
-    fn connect(&self) -> crate::NiterResult<()>;
-    fn disconnect(&self) -> crate::NiterResult<()>;
-    fn characteristics(&self) -> crate::NiterResult<Vec<Self::Characteristic>>;
-    fn services(&self) -> crate::NiterResult<Vec<Self::Service>>;
-    fn descriptors(&self) -> crate::NiterResult<Vec<Self::Descriptor>>;
-    fn register_service(&self) -> crate::NiterResult<()>;
+mod service;
+pub use self::service::*;
+
+pub trait Peripheral: std::fmt::Debug {
+    fn find_adapter() -> crate::NiterResult<Self> where Self: Sized;
+    fn is_powered(&self) -> crate::NiterResult<bool>;
+    fn is_advertising(&self) -> crate::NiterResult<bool>;
+    fn start_advertising(&self, name: &str) -> crate::NiterResult<()>;
+    fn stop_advertising(&self) -> crate::NiterResult<()>;
+    fn register_gatt(&self) -> crate::NiterResult<()>;
+    fn unregister_gatt(&self) -> crate::NiterResult<()>;
+
+    fn add_service(&mut self, service: GattService) -> crate::NiterResult<()>;
 }

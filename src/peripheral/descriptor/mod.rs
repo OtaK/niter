@@ -1,7 +1,7 @@
 mod descriptor_delegate;
 pub use self::descriptor_delegate::*;
 
-use GattDescriptorDelegate as _;
+// use GattDescriptorDelegate as _;
 
 #[derive(Debug)]
 pub struct GattDescriptor<T: 'static + GattDescriptorDelegate + Sync + Send> {
@@ -29,14 +29,14 @@ impl<T: 'static + GattDescriptorDelegate + Sync + Send> GattDescriptor<T> {
     async fn run(self) -> Self {
         let _flags = T::METHODS_ENABLED;
         let _uuid = self.uuid.clone();
-        let needs_loop = self.delegate.as_ref().map(|d| d.needs_loop()).unwrap_or_default();
+        let _needs_loop = self.delegate.as_ref().map(|d| d.needs_loop()).unwrap_or_default();
 
-        let mut maybe_rx = if needs_loop {
-            None
-            // TODO:
-        } else {
-            None
-        };
+        // let mut maybe_rx = if needs_loop {
+        //     None
+        //     // TODO:
+        // } else {
+        //     None
+        // };
         // TODO:
         self
     }
