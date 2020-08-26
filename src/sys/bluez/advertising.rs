@@ -1,5 +1,5 @@
 use crate::sys::bluez;
-use bluez::spec::ble_appearance::BLEAppearance;
+use crate::spec::ble_appearance::BLEAppearance;
 
 #[derive(
     Debug,

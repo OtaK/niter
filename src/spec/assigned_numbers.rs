@@ -2,12 +2,14 @@
     Debug,
     Clone,
     Copy,
-    zvariant_derive::Type,
+    PartialEq,
+    Eq,
     num_enum::TryFromPrimitive,
     num_enum::IntoPrimitive,
     serde_repr::Serialize_repr,
     serde_repr::Deserialize_repr,
 )]
+#[cfg_attr(target_os = "linux", derive(zvariant_derive::Type))]
 #[repr(u16)]
 pub enum AssignedRfcommNumber {
     Dun = 1,

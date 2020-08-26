@@ -8,8 +8,8 @@
     num_enum::IntoPrimitive,
     serde_repr::Serialize_repr,
     serde_repr::Deserialize_repr,
-    zvariant_derive::Type,
 )]
+#[cfg_attr(target_os = "linux", derive(zvariant_derive::Type))]
 #[repr(u16)]
 pub enum BLEAppearance {
     /// Unknown device

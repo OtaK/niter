@@ -13,7 +13,15 @@ pub enum NiterError {
     #[error(transparent)]
     UuidError(#[from] uuid::Error),
     #[error(transparent)]
+    GattError(#[from] NiterGattError),
+    #[error(transparent)]
     Other(#[from] anyhow::Error),
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum NiterGattError {
+    #[error("The delegated call (flag: {0:b}) has not been implemented on this delegate")]
+    DelegateNotImplemented(u8),
 }
 
 #[derive(Debug, zbus::DBusError)]

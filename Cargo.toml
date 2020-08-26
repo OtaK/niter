@@ -30,8 +30,10 @@ uuid = { version = "0.8", features = ["serde"] }
 serde_repr = "0.1"
 strum = { version = "0.19", features = ["derive"] }
 num_enum = "0.5"
+bitflags = "1.2"
+async-std = "1.6"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-zbus = "1.0"
-zvariant_derive = "2.0"
-zvariant = "2.0"
+zbus = "1.1"
+zvariant_derive = "2.1"
+zvariant = "2.1"

@@ -47,7 +47,7 @@ pub trait Device {
     #[dbus_proxy(property)]
     fn class(&self) -> zbus::fdo::Result<u32>;
     #[dbus_proxy(property)]
-    fn appearance(&self) -> zbus::fdo::Result<bluez::spec::ble_appearance::BLEAppearance>;
+    fn appearance(&self) -> zbus::fdo::Result<crate::spec::ble_appearance::BLEAppearance>;
     #[dbus_proxy(property)]
     fn uuids(&self) -> zbus::fdo::Result<crate::UuidArray>;
     #[dbus_proxy(property)]

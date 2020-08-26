@@ -1,4 +1,4 @@
-pub trait Central<P: crate::Peripheral>: std::fmt::Debug {
+pub(crate) trait PlatformCentral<P: crate::PlatformPeripheral>: std::fmt::Debug {
     fn start_scan(&self) -> crate::NiterResult<()>;
     fn stop_scan(&self) -> crate::NiterResult<()>;
     fn filter_duplicates(&mut self, filter: bool) -> crate::NiterResult<()>;

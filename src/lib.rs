@@ -1,4 +1,7 @@
+#![forbid(unsafe_code)]
+
 pub mod sys;
+pub mod spec;
 
 mod uuid;
 pub use self::uuid::*;

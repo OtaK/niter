@@ -52,7 +52,11 @@ impl From<uuid::Uuid> for Uuid {
 impl zvariant::Basic for Uuid {
     const SIGNATURE_CHAR: char = String::SIGNATURE_CHAR;
     const SIGNATURE_STR: &'static str = String::SIGNATURE_STR;
-    const ALIGNMENT: usize = String::ALIGNMENT;
+    const ALIGNMENT: usize = 4;
+
+    fn alignment(format: zvariant::EncodingFormat) -> usize {
+        String::alignment(format)
+    }
 }
 
 impl zvariant::Type for Uuid {

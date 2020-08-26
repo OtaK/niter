@@ -15,7 +15,6 @@ pub mod media;
 pub mod mesh;
 pub mod obex;
 pub mod profile;
-pub mod spec;
 
 #[macro_use]
 mod macros;

@@ -1,6 +1,12 @@
 # Niter
 
-Pure-rust implementation of the BlueZ DBus API thanks to `zbus`.
+Pure-rust implementation of BT LE client and peripheral roles.
+
+## Platform support
+
+- [x] Linux: Main focus. `zbus` helped a lot.
+- [ ] Windows: Planned. Should be alright thanks to the WinRT bindings
+- [ ] macOS: Planned. We'd need some help though.
 
 ## Features
 
