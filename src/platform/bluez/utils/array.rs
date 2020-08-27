@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
-pub struct ZvariantableArray<T: zvariant::Type>(Vec<T>);
+pub struct ZvariantableArray<T: zvariant::Type>(pub(crate) Vec<T>);
 
 impl<T: zvariant::Type> std::ops::Deref for ZvariantableArray<T> {
     type Target = Vec<T>;

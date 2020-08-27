@@ -55,7 +55,7 @@ pub trait MediaTransport {
     fn release(&self) -> zbus::Result<()>;
 
     #[dbus_proxy(property)]
-    fn device(&self) -> zbus::fdo::Result<crate::sys::bluez::device::Device>;
+    fn device(&self) -> zbus::fdo::Result<crate::platform::bluez::device::Device>;
     #[dbus_proxy(property, name = "UUID")]
     fn uuid(&self) -> zbus::fdo::Result<crate::Uuid>;
     #[dbus_proxy(property)]

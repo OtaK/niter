@@ -1,4 +1,10 @@
-#[zbus::dbus_proxy(interface = "org.bluez.GattService1", default_service = "org.bluez")]
+use crate::platform::bluez;
+
+#[zbus::dbus_proxy(
+    interface = "org.bluez.GattService1",
+    default_service = "org.bluez",
+    // default_path = "[variable prefix]/{hci0,hci1,...}/dev_XX_XX_XX_XX_XX_XX/serviceXX"
+)]
 #[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
 pub trait GattService {
     #[dbus_proxy(property, name = "UUID")]
@@ -6,11 +12,11 @@ pub trait GattService {
     #[dbus_proxy(property)]
     fn primary(&self) -> zbus::fdo::Result<bool>;
     #[dbus_proxy(property)]
-    fn device(&self) -> zbus::fdo::Result<crate::sys::bluez::device::Device>;
+    fn device(&self) -> zbus::fdo::Result<bluez::device::Device>;
     #[dbus_proxy(property)]
     fn includes(
         &self,
-    ) -> zbus::fdo::Result<crate::sys::bluez::ZvariantableArray<crate::sys::bluez::advertising::SystemInclude>>;
+    ) -> zbus::fdo::Result<bluez::ZvariantableArray<bluez::advertising::SystemInclude>>;
     #[dbus_proxy(property)]
     fn handle(&self) -> zbus::fdo::Result<u16>;
 }

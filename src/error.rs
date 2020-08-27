@@ -24,6 +24,13 @@ pub enum NiterGattError {
     DelegateNotImplemented(u8),
 }
 
+#[cfg(target_os = "linux")]
+impl Into<zbus::fdo::Error> for NiterGattError {
+    fn into(self) -> zbus::fdo::Error {
+        zbus::fdo::Error::NotSupported(format!("{}", self))
+    }
+}
+
 #[derive(Debug, zbus::DBusError)]
 #[dbus_error(prefix = "org.bluez.Error")]
 pub enum BlueZError {
@@ -38,3 +45,4 @@ pub enum BlueZError {
 }
 
 pub type NiterResult<T> = Result<T, NiterError>;
+pub type NiterGattResult<T> = Result<T, NiterGattError>;

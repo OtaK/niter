@@ -18,5 +18,5 @@ pub trait Central<D: Device>: std::fmt::Debug {
     fn stop_scan(&self) -> crate::NiterResult<()>;
     fn filter_duplicates(&mut self, filter: bool) -> crate::NiterResult<()>;
     fn devices(&self) -> crate::NiterResult<Vec<D>>;
-    fn get_device(&self, ) -> crate::NiterResult<Option<D>>;
+    fn get_device(&self, uuid: crate::Uuid) -> crate::NiterResult<Option<D>>;
 }

@@ -1,5 +1,4 @@
-#![allow(clippy::too_many_arguments)]
-use crate::sys::bluez;
+use crate::platform::bluez;
 
 use bluez::mesh::{
     application::{MeshApplication, MeshApplicationDelegate},
@@ -39,6 +38,7 @@ pub trait MeshNetwork {
         app_root: MeshApplication<impl MeshApplicationDelegate>,
         uuid: crate::RawUuid,
     ) -> zbus::Result<u64>;
+    #[allow(clippy::too_many_arguments)]
     fn import(
         &self,
         app_root: MeshApplication<impl MeshApplicationDelegate>,

@@ -1,3 +1,6 @@
+use crate::error::*;
+use super::GattDescriptorFlags;
+
 bitflags::bitflags! {
     pub struct GattDescriptorMethodsEnabled: u8 {
         const READ = 0b0000_0001;
@@ -6,31 +9,74 @@ bitflags::bitflags! {
     }
 }
 
-pub trait GattDescriptorDelegate {
+pub trait GattDescriptorDelegateInner: Send + Sync + 'static {
     const UUID: u16;
     const METHODS_ENABLED: GattDescriptorMethodsEnabled;
+    const ENCRYPT_READ: bool = false;
+    const ENCRYPT_AUTH_READ: bool = false;
+    const ENCRYPT_WRITE: bool = false;
+    const ENCRYPT_AUTH_WRITE: bool = false;
+    const AUTHORIZE: bool = false;
 
     fn needs_loop(&self) -> bool {
         !Self::METHODS_ENABLED.is_empty()
     }
 
-    fn initial_value(&self) -> Option<Vec<u8>> {
-        None
-    }
+    fn value(&self) -> &[u8];
 
-    fn read(&self) -> crate::NiterResult<Vec<u8>> {
+    fn read(&self) -> NiterGattResult<Vec<u8>> {
         if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::READ) {
-            return Err(crate::NiterGattError::DelegateNotImplemented(Self::METHODS_ENABLED.bits).into());
+            return Err(NiterGattError::DelegateNotImplemented(Self::METHODS_ENABLED.bits));
         }
 
         self.read()
     }
 
-    fn write(&mut self, data: Vec<u8>, offset: usize) -> crate::NiterResult<Option<Vec<u8>>> {
+    fn write(&mut self, data: Vec<u8>, offset: usize) -> NiterGattResult<()> {
         if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::WRITE) {
-            return Err(crate::NiterGattError::DelegateNotImplemented(Self::METHODS_ENABLED.bits).into());
+            return Err(NiterGattError::DelegateNotImplemented(Self::METHODS_ENABLED.bits).into());
         }
 
         self.write(data, offset)
     }
 }
+
+#[cfg(target_os = "linux")]
+pub trait GattDescriptorDelegateInnerDbusExt: GattDescriptorDelegateInner {
+    #[cfg(target_os = "linux")]
+    fn dbus_descriptor_flags(&self) -> Vec<GattDescriptorFlags> {
+        let mut ret = vec![];
+        if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::READ) {
+            ret.push(GattDescriptorFlags::Read);
+        }
+        if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::WRITE) {
+            ret.push(GattDescriptorFlags::Write);
+        }
+        if Self::ENCRYPT_READ {
+            ret.push(GattDescriptorFlags::EncryptRead);
+        }
+        if Self::ENCRYPT_WRITE {
+            ret.push(GattDescriptorFlags::EncryptWrite);
+        }
+        if Self::ENCRYPT_AUTH_READ {
+            ret.push(GattDescriptorFlags::EncryptAuthenticatedRead);
+        }
+        if Self::ENCRYPT_AUTH_WRITE {
+            ret.push(GattDescriptorFlags::EncryptAuthenticatedWrite);
+        }
+        if Self::AUTHORIZE {
+            ret.push(GattDescriptorFlags::Authorize);
+        }
+        ret
+    }
+}
+
+#[cfg(target_os = "linux")]
+pub trait GattDescriptorDelegate:
+    GattDescriptorDelegateInner +
+    GattDescriptorDelegateInnerDbusExt +
+    zvariant::Type
+{}
+
+#[cfg(not(target_os = "linux"))]
+pub trait GattDescriptorDelegate: GattDescriptorDelegateInner {}

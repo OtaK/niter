@@ -1,4 +1,4 @@
-use crate::sys::bluez;
+use crate::platform::bluez;
 
 #[derive(Debug, Clone, Copy, zvariant_derive::Type, serde::Deserialize, serde::Serialize)]
 pub struct UnprovisionedScanOptions {

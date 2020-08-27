@@ -1,4 +1,4 @@
-use crate::sys::bluez;
+use crate::platform::bluez;
 use crate::spec::ble_appearance::BLEAppearance;
 
 #[derive(

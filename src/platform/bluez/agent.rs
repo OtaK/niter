@@ -1,4 +1,4 @@
-use crate::sys::bluez;
+use crate::platform::bluez;
 use bluez::device::Device;
 
 #[derive(

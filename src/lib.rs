@@ -1,6 +1,6 @@
 #![forbid(unsafe_code)]
 
-pub mod sys;
+pub mod platform;
 pub mod spec;
 
 mod uuid;
