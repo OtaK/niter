@@ -28,12 +28,12 @@ thiserror = "1.0"
 anyhow = "1.0"
 uuid = { version = "0.8", features = ["serde"] }
 serde_repr = "0.1"
-strum = { version = "0.19", features = ["derive"] }
+strum = { version = "0.20", features = ["derive"] }
 num_enum = "0.5"
 bitflags = "1.2"
-async-std = "1.6"
+async-std = "1.9"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-zbus = "1.1"
-zvariant_derive = "2.1"
-zvariant = "2.1"
+zbus = "1.9"
+zvariant_derive = "2.6"
+zvariant = "2.6"

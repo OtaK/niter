@@ -22,7 +22,7 @@ pub enum ProvisionerAddNodeFailedReason {
 
 crate::impl_tryfrom_zvariant!(ProvisionerAddNodeFailedReason);
 
-pub trait ProvisionerDelegate: zvariant::Type {
+pub trait ProvisionerDelegate: zvariant::Type + 'static {
     fn scan_result(
         &self,
         rssi: i16,

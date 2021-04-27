@@ -120,10 +120,10 @@ impl From<zvariant::OwnedValue> for UuidArray {
 #[cfg(target_os = "linux")]
 impl<'a> Into<zvariant::Structure<'a>> for UuidArray {
     fn into(self) -> zvariant::Structure<'a> {
-        let mut ret = zvariant::Structure::new();
+        let mut ret = zvariant::StructureBuilder::new();
         for item in self.0.into_iter() {
             ret = ret.add_field(zvariant::Value::Str(item.to_string().into()));
         }
-        ret
+        ret.build()
     }
 }

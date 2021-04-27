@@ -1,4 +1,4 @@
-pub trait GattProfileDelegate: zvariant::Type {
+pub trait GattProfileDelegate: zvariant::Type + 'static {
     fn release(&mut self);
 }
 

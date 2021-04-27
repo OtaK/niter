@@ -109,7 +109,7 @@ impl<'a> Into<zvariant::Value<'a>> for MediaItemMetadata {
     }
 }
 
-pub trait MediaItemDelegate<E: std::error::Error>: zvariant::Type {
+pub trait MediaItemDelegate<E: std::error::Error>: zvariant::Type + 'static {
     fn play(&mut self) -> Result<(), E>;
     fn add_to_now_playing(&mut self) -> Result<(), E>;
 

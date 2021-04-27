@@ -1,4 +1,4 @@
-pub trait MeshAttentionDelegate: zvariant::Type {
+pub trait MeshAttentionDelegate: zvariant::Type + 'static {
     fn set_timer(&self, element_index: u8, time: u16);
     fn get_timer(&self, element_index: u8) -> u16;
 }

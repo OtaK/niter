@@ -55,7 +55,7 @@ impl<'a> Into<zvariant::Value<'a>> for ModelConfiguration {
     }
 }
 
-pub trait MeshElementDelegate: zvariant::Type {
+pub trait MeshElementDelegate: zvariant::Type + 'static {
     fn message_received(
         &mut self,
         source: u16,

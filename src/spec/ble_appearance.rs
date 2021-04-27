@@ -125,6 +125,6 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for BLEAppearance {
 
 impl Into<zvariant::Structure<'_>> for BLEAppearance {
     fn into(self) -> zvariant::Structure<'static> {
-        zvariant::Structure::new().append_field(zvariant::Value::U16(self as _))
+        zvariant::StructureBuilder::new().append_field(zvariant::Value::U16(self as _)).build()
     }
 }

@@ -46,7 +46,7 @@ macro_rules! impl_enumto_zstruct {
             fn into(self) -> zvariant::Structure<'static> {
                 use std::string::ToString as _;
                 let s = self.to_string();
-                zvariant::Structure::new().append_field(zvariant::Value::Str(s.into()))
+                zvariant::StructureBuilder::new().append_field(zvariant::Value::Str(s.into())).build()
             }
         }
     };

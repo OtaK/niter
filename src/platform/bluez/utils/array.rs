@@ -19,11 +19,11 @@ where
     T: Into<zvariant::Value<'a>>,
 {
     fn into(self) -> zvariant::Structure<'a> {
-        let mut zstruct = zvariant::Structure::new();
+        let mut zstruct = zvariant::StructureBuilder::new();
         for item in self.0.into_iter() {
             zstruct = zstruct.add_field(item.into());
         }
-        zstruct
+        zstruct.build()
     }
 }
 

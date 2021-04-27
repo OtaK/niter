@@ -106,7 +106,7 @@ impl<'a> DeviceProxy<'a> {
         let mut paths: Vec<String> = managed_objects
             .into_iter()
             .filter(|(_, contents)| contents.contains_key("org.bluez.Device1"))
-            .map(|(path, _)| path.into())
+            .map(|(path, _)| path.to_string())
             .collect();
 
         paths.reverse();

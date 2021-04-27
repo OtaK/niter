@@ -1,4 +1,4 @@
-pub trait ObexAgentDelegate: zvariant::Type + serde::Serialize {
+pub trait ObexAgentDelegate: zvariant::Type + serde::Serialize + 'static {
     fn release(&mut self);
     fn authorize_push(&self, transfer: ()) -> String;
     fn cancel(&mut self);

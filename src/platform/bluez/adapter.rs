@@ -247,7 +247,7 @@ impl<'a> AdapterProxy<'a> {
         let mut paths: Vec<std::borrow::Cow<String>> = managed_objects
             .into_iter()
             .filter(|(_, contents)| contents.contains_key("org.bluez.Adapter1"))
-            .map(|(path, _)| std::borrow::Cow::Owned(path))
+            .map(|(path, _)| std::borrow::Cow::Owned(path.to_string()))
             .collect();
 
         paths.reverse();

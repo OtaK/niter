@@ -115,7 +115,7 @@ pub enum OutOfBandInfoAvailability {
 
 crate::impl_tryfrom_zvariant!(OutOfBandInfoAvailability);
 
-pub trait ProvisioningAgentDelegate: zvariant::Type {
+pub trait ProvisioningAgentDelegate: zvariant::Type + 'static {
     fn private_key(&self) -> Vec<u8>;
     fn public_key(&self) -> Vec<u8>;
     fn display_string(&self, value: String);

@@ -7,7 +7,7 @@ pub struct MediaPlayerFilter {
     attributes: Vec<MediaItemAttibute>
 }
 
-pub trait MediaFolderDelegate: zvariant::Type + Sized {
+pub trait MediaFolderDelegate: zvariant::Type + Sized + 'static {
     fn search(&self, value: String, filter: MediaPlayerFilter) -> zbus::fdo::Result<MediaFolder<Self>>;
     fn list_items(&self, filter: MediaPlayerFilter) -> zbus::fdo::Result<Vec<(String, MediaItemMetadata)>>;
     fn change_folder(&self, folder: String) -> zbus::fdo::Result<()>;

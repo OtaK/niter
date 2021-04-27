@@ -7,7 +7,7 @@ pub struct MediaEndpointProperties {
     capabilities: MediaEndpointCapabilities
 }
 
-pub trait MediaEndpointDelegate<E: std::error::Error>: zvariant::Type {
+pub trait MediaEndpointDelegate<E: std::error::Error>: zvariant::Type + 'static {
     fn set_configuration(&mut self, transport: MediaTransport, properties: MediaEndpointProperties) -> Result<(), E>;
     fn select_configuration(&mut self, capabilities: MediaEndpointCapabilities) -> Result<MediaTransportConfiguration, E>;
     fn clear_configuration(&mut self, transport: MediaTransport) -> Result<(), E>;
