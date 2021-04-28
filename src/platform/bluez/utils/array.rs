@@ -35,14 +35,7 @@ where
     fn try_from(v: zvariant::OwnedValue) -> crate::NiterResult<Self> {
         use std::convert::TryInto as _;
         let zva: zvariant::Array = v.try_into()?;
-        let zva_len = zva.len();
-        let inner: Vec<T> = zva.iter().cloned().try_fold(
-            Vec::with_capacity(zva_len),
-            |mut acc, item| -> crate::NiterResult<Vec<T>> {
-                acc.push(item.try_into()?);
-                Ok(acc)
-            },
-        )?;
+        let inner: Vec<T> = zva.try_into()?;
         Ok(Self(inner))
     }
 }
