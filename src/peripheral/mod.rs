@@ -16,5 +16,5 @@ pub trait Peripheral: std::fmt::Debug {
     fn register_gatt(&self) -> crate::NiterResult<()>;
     fn unregister_gatt(&self) -> crate::NiterResult<()>;
 
-    fn add_service(&mut self, service: GattService) -> crate::NiterResult<()>;
+    fn add_service<S: GattServiceDelegate + 'static>(&mut self, service: GattService<S>) -> crate::NiterResult<()>;
 }

@@ -25,3 +25,19 @@ fn enumerate_devices() {
     let enumerator = niter::platform::device::DeviceProxy::enumerate_devices(&connection).unwrap();
     println!("{:#?}", enumerator);
 }
+
+#[test]
+fn connect_to_device() {
+    let connection = zbus::Connection::new_system().unwrap();
+    let adapter = niter::platform::adapter::AdapterProxy::new(&connection).unwrap();
+    adapter.start_discovery().unwrap();
+    std::thread::sleep(std::time::Duration::from_secs(5));
+    let mut devices = niter::platform::device::DeviceProxy::enumerate_devices(&connection).unwrap();
+    if let Some(d) = devices.next() {
+        println!("Device: {:#?}", d);
+        let path: String = d.object_path;
+        let device = niter::platform::device::DeviceProxy::new_for_owned(connection, "org.bluez".into(), path).unwrap();
+        device.connect().unwrap();
+    }
+
+}
