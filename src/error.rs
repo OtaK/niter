@@ -1,11 +1,15 @@
 #[derive(Debug, thiserror::Error)]
 pub enum NiterError {
+    #[cfg(target_os = "linux")]
     #[error(transparent)]
     DbusError(#[from] zbus::Error),
+    #[cfg(target_os = "linux")]
     #[error(transparent)]
     DbusFdoError(#[from] zbus::fdo::Error),
+    #[cfg(target_os = "linux")]
     #[error(transparent)]
     BlueZError(#[from] BlueZError),
+    #[cfg(target_os = "linux")]
     #[error(transparent)]
     ZvariantError(#[from] zvariant::Error),
     #[error(transparent)]
@@ -31,6 +35,7 @@ impl Into<zbus::fdo::Error> for NiterGattError {
     }
 }
 
+#[cfg(target_os = "linux")]
 #[derive(Debug, zbus::DBusError)]
 #[dbus_error(prefix = "org.bluez.Error")]
 pub enum BlueZError {

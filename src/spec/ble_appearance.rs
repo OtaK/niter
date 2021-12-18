@@ -114,6 +114,7 @@ pub enum BLEAppearance {
     GenericEnvironmentalSensor = 5696,
 }
 
+#[cfg(target_os = "linux")]
 impl std::convert::TryFrom<zvariant::OwnedValue> for BLEAppearance {
     type Error = crate::NiterError;
     fn try_from(value: zvariant::OwnedValue) -> Result<Self, Self::Error> {
@@ -123,6 +124,7 @@ impl std::convert::TryFrom<zvariant::OwnedValue> for BLEAppearance {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl Into<zvariant::Structure<'_>> for BLEAppearance {
     fn into(self) -> zvariant::Structure<'static> {
         zvariant::StructureBuilder::new().append_field(zvariant::Value::U16(self as _)).build()

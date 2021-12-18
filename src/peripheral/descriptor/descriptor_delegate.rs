@@ -1,5 +1,4 @@
 use crate::error::*;
-use super::GattDescriptorFlags;
 
 bitflags::bitflags! {
     pub struct GattDescriptorMethodsEnabled: u8 {
@@ -44,28 +43,28 @@ pub trait GattDescriptorDelegateInner: Send + Sync + 'static {
 #[cfg(target_os = "linux")]
 pub trait GattDescriptorDelegateInnerDbusExt: GattDescriptorDelegateInner {
     #[cfg(target_os = "linux")]
-    fn dbus_descriptor_flags(&self) -> Vec<GattDescriptorFlags> {
+    fn dbus_descriptor_flags(&self) -> Vec<super::GattDescriptorFlags> {
         let mut ret = vec![];
         if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::READ) {
-            ret.push(GattDescriptorFlags::Read);
+            ret.push(super::GattDescriptorFlags::Read);
         }
         if Self::METHODS_ENABLED.contains(GattDescriptorMethodsEnabled::WRITE) {
-            ret.push(GattDescriptorFlags::Write);
+            ret.push(super::GattDescriptorFlags::Write);
         }
         if Self::ENCRYPT_READ {
-            ret.push(GattDescriptorFlags::EncryptRead);
+            ret.push(super::GattDescriptorFlags::EncryptRead);
         }
         if Self::ENCRYPT_WRITE {
-            ret.push(GattDescriptorFlags::EncryptWrite);
+            ret.push(super::GattDescriptorFlags::EncryptWrite);
         }
         if Self::ENCRYPT_AUTH_READ {
-            ret.push(GattDescriptorFlags::EncryptAuthenticatedRead);
+            ret.push(super::GattDescriptorFlags::EncryptAuthenticatedRead);
         }
         if Self::ENCRYPT_AUTH_WRITE {
-            ret.push(GattDescriptorFlags::EncryptAuthenticatedWrite);
+            ret.push(super::GattDescriptorFlags::EncryptAuthenticatedWrite);
         }
         if Self::AUTHORIZE {
-            ret.push(GattDescriptorFlags::Authorize);
+            ret.push(super::GattDescriptorFlags::Authorize);
         }
         ret
     }

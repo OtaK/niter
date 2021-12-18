@@ -1,5 +1,4 @@
 use crate::error::*;
-use crate::impl_tryfrom_zvariant;
 
 const BASE_UUID: (u32, u16, u16, u64) = (0x00000000, 0x0000, 0x1000, 0x800000805F9B34FB);
 
@@ -41,7 +40,8 @@ impl std::str::FromStr for Uuid {
     }
 }
 
-impl_tryfrom_zvariant!(Uuid);
+#[cfg(target_os = "linux")]
+crate::impl_tryfrom_zvariant!(Uuid);
 
 impl From<uuid::Uuid> for Uuid {
     fn from(v: uuid::Uuid) -> Self {
@@ -49,6 +49,7 @@ impl From<uuid::Uuid> for Uuid {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl zvariant::Basic for Uuid {
     const SIGNATURE_CHAR: char = String::SIGNATURE_CHAR;
     const SIGNATURE_STR: &'static str = String::SIGNATURE_STR;
@@ -59,6 +60,7 @@ impl zvariant::Basic for Uuid {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl zvariant::Type for Uuid {
     #[inline]
     fn signature() -> zvariant::Signature<'static> {
@@ -81,7 +83,8 @@ impl Into<RawUuid> for Uuid {
     }
 }
 
-#[derive(Debug, Clone, zvariant_derive::Type, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(target_os = "linux", derive(zvariant_derive::Type))]
 pub struct UuidArray(Vec<Uuid>);
 
 impl From<Vec<Uuid>> for UuidArray {
